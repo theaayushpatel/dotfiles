@@ -1,0 +1,248 @@
+{
+  "exclusive": true,
+  "reload_style_on_change": true,
+  "position": "top",
+  "mod": "dock",
+  "passthrough": false,
+  "gtk-layer-shell": true,
+  "margin-top": 0,
+  "margin-left": 0,
+  "margin-right": 0,
+  "margin-bottom": 0,
+  "modules-left": [
+    "custom/weather",
+    "custom/separator3",
+    "clock",
+    "custom/separator",
+    "cpu",
+    "memory",
+    "custom/gpu-usage",
+    "custom/separator",
+    "pulseaudio#input",
+    "pulseaudio#output"
+    // "custom/screenrecording-indicator"
+    
+  ],
+  "modules-center": [
+ "mpris"
+  ],
+  "modules-right": [
+    
+    "hyprland/workspaces",
+    "custom/separator",
+    "network",
+    "custom/separator",
+    "bluetooth",
+    "backlight",
+    "custom/separator",
+    "tray",
+    "custom/separator",
+    "power-profiles-daemon",
+    "battery",
+    "custom/notification",
+    "custom/separator",
+    "custom/power"
+  ],
+
+  "hyprland/workspaces": {
+    "disable-scroll": true,
+    "all-outputs": true,
+    "cursor": true,
+    "format": "{icon}",
+    "format-icons": {
+    "1": "一",
+    "2": "二",
+    "3": "三",
+    "4": "四",
+    "5": "五",
+    "6": "六",
+    "7": "七",
+    "8": "八",
+    "9": "九",
+    "10": "十"
+  },
+    "persistent-workspaces": {
+      "*": 10
+    }
+  },
+
+"custom/separator": {
+    "format": "|", 
+    "tooltip": false
+},
+"custom/separator2": {
+"exec": "sh -c 'count=$(busctl --user get-property org.kde.StatusNotifierWatcher /StatusNotifierWatcher org.kde.StatusNotifierWatcher RegisteredStatusNotifierItems | sed -n \"s/^as \\([0-9]\\+\\).*/\\1/p\"); if [ \"${count:-0}\" -gt 0 ]; then echo \"{\\\"text\\\":\\\"|\\\",\\\"class\\\":\\\"show\\\"}\"; else echo \" {\\\"text\\\":\\\"\\\",\\\"class\\\":\\\"hide\\\"}\"; fi'",
+    "return-type": "json",
+    "interval": 2
+},
+"custom/separator3": {
+    "format": "•", 
+    "tooltip": false
+},
+
+"custom/weather": {
+    "exec": "~/.config/waybar/scripts/weather.sh",
+    "return-type": "json",
+    "interval": 300,
+    "tooltip": true
+},
+
+  "custom/power": {
+    "format": "   ",
+    "on-click": "zsh -lc '~/.config/waybar/scripts/power-menu.sh'",
+    "on-click-right": "xdg-terminal-exec",
+    "tooltip-format": "Power menu\nClick to open"
+  },
+
+"power-profiles-daemon": {
+    "format": "{icon}",
+    "tooltip-format": "Power profile: {profile}\nDriver: {driver}",
+    "tooltip": true,
+    "format-icons": {
+      "performance": "",
+      "balanced": " ",
+      "power-saver": ""
+    }
+  },
+"cpu": {
+    "interval": 5,
+    "format": "<span color='#47c8ff'>cpu</span> {usage:02}%",
+    "on-click": "zsh -lc 'kitty -e btop'",
+    "states": {
+        "warning": 50,
+        "critical": 80
+    }
+},
+"memory": {
+    "interval": 5,
+    "format": "<span color='#47c8ff'>mem</span> {percentage:02}%",
+    "tooltip-format": "Used {percentage}%\n{used:0.1f}GB/{total:0.1f}GB",
+    "on-click": "zsh -lc 'kitty -e btop'",
+    "states": {
+        "warning": 50,
+        "critical": 80
+    }
+},
+"custom/notification": {
+    "exec": "swaync-client -D | grep -q true && echo '  ' || echo '  '",
+    "interval": 2,
+    "on-click": "swaync-client -t",
+    "on-click-right": "swaync-client -d",
+    "tooltip": false
+},
+ "custom/gpu-usage": {
+    "exec": "gpu-usage-waybar --text-format '<span color=\"#47c8ff\">gpu</span> {gpu_utilization}% <span color=\"#47c8ff\">vram</span> {mem_utilization}%'",
+    "return-type": "json",
+    "format": "{}",
+    "on-click": "zsh -lc 'kitty -e nvtop'"
+},
+ "backlight": {
+    "device": "amdgpu_bl1",
+    "format": "{icon}",
+    "tooltip": true,
+    "tooltip-format": "Brightness:  {percent}%",
+    "format-alt": "{icon} {percent}%",
+    "format-alt-click": "click-right",
+    "format-icons": ["󰃜", "󰃝", "󰃞", "󰃟", "󰃠"],
+    "on-scroll-down": "brightnessctl s 5%-",
+    "on-scroll-up": "brightnessctl s +5%"
+  },
+   "clock": {
+    "format": "<span color='#47c8ff'>{0:%H:%M}</span> <span size='small' color='#ffffff'><i>{0:%a, %b %d}</i></span>",
+    "format-alt": "{:L%d %B W%V %Y}",
+    "tooltip-format": "<span>{calendar}</span>",
+    "calendar": {
+      "mode": "month",
+      "mode-mon-col": 3,
+      "on-click-right": "mode",
+      "format": {
+        "month": "<span color='#ffead3'><b>{}</b></span>",
+        "weekdays": "<span color='#ffcc66'><b>{}</b></span>",
+        "today": "<span color='#ff6699'><b>{}</b></span>"
+      }
+    },
+    // "on-click-right": "omarchy-launch-floating-terminal-with-presentation omarchy-tz-select"
+},
+  "network": {
+    "format": "<span color='#47c8ff'>net</span> on",
+    "format-wifi": "<span color='#47c8ff'>wifi</span> {essid}",
+    "format-ethernet": "<span color='#47c8ff'>eth</span> on",
+    "format-disconnected": "<span color='#47c8ff'>net</span> off",
+    "tooltip-format-wifi": "{essid} ({frequency} GHz)\n⇣{bandwidthDownBytes}  ⇡{bandwidthUpBytes}",
+    "tooltip-format-ethernet": "⇣{bandwidthDownBytes}  ⇡{bandwidthUpBytes}",
+    "tooltip-format-disconnected": "Disconnected",
+    "interval": 3,
+    "spacing": 1,
+    "on-click": "zsh -lc '~/.config/waybar/scripts/network-menu.sh'"
+  },
+"battery": {
+    "format": "{icon} {capacity}%",
+    "format-discharging": "{icon} {capacity}%",
+    "format-charging": "{icon} {capacity}%",
+    "format-plugged": "",
+    "format-icons": {
+      "charging": ["󰢜", "󰂆", "󰂇", "󰂈", "󰢝", "󰂉", "󰢞", "󰂊", "󰂋", "󰂅"],
+      "default": ["󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"]
+    },
+    "format-full": "󰂅",
+    "tooltip-format-discharging": "{power:>1.0f}W↓ {capacity}%",
+    "tooltip-format-charging": "{power:>1.0f}W↑ {capacity}%",
+    "interval": 5,
+    // "on-click": "omarchy-menu power",
+    // "on-click-right": "notify-send -u low \"$(omarchy-battery-status)\"",
+    "states": {
+      "warning": 20,
+      "critical": 10
+    }
+  },
+ "bluetooth": {
+    "format": "{num_connections}",
+    "format-disabled": "󰂲 {status}",
+    "format-connected": "󰂱 {num_connections}",
+    "tooltip-format": "Devices connected: {num_connections}",
+    "on-click": "blueman-manager"
+  },
+"pulseaudio#input": {
+    "format": "<span color='#47c8ff'>mic</span> {source_volume}%",
+    "format-muted": "<span color='#47c8ff'>mic</span> muted",
+    "tooltip-format": "mic {source_volume}%",
+    "scroll-step": 1,
+    "smooth-scrolling-threshold": 1,
+    "max-volume": 100,
+    "on-click": "pavucontrol",
+    "on-click-right": "pactl set-source-mute @DEFAULT_SOURCE@ toggle",
+    "on-scroll-up": "pactl set-source-volume @DEFAULT_SOURCE@ +1%",
+    "on-scroll-down": "pactl set-source-volume @DEFAULT_SOURCE@ -1%"
+},
+"pulseaudio#output": {
+    "format": "<span color='#47c8ff'>vol</span> {volume}%",
+    "format-muted": "<span color='#47c8ff'>vol</span> muted",
+    "tooltip-format": "vol {volume}%",
+    "max-volume": 100,
+    "scroll-step": 2,
+    "smooth-scrolling-threshold": 1,
+    "on-click": "pavucontrol",
+    "on-click-right": "pactl set-sink-mute @DEFAULT_SINK@ toggle"
+},
+ "mpris": {
+    "format": "{dynamic}",
+    "format-paused": "<span color='#47c8ff'>paused</span> {dynamic}",
+    "interval": 1, 
+    "dynamic-order": ["title", "position", "length"], 
+    "dynamic-importance-order": ["position", "length", "title"],
+    "tooltip-format": "{player} ({status}):\n{artist} - {title}",  
+    "ignored-players": ["firefox", "brave"]
+  },
+
+  "tray": {
+    "icon-size": 16,
+    "spacing": 6
+  },
+  // "custom/screenrecording-indicator": {
+  //   "on-click": "omarchy-capture-screenrecording",
+  //   "exec": "$OMARCHY_PATH/default/waybar/indicators/screen-recording.sh",
+  //   "signal": 8,
+  //   "return-type": "json"
+  // },
+  
+}

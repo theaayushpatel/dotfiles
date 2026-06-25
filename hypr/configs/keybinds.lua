@@ -1,6 +1,6 @@
 local p = require("configs.programs")
 
-local mainMod = p.mainMod
+local mainMod = "SUPER"
 
 ---------------------
 ---- KEYBINDINGS ----
@@ -24,8 +24,8 @@ hl.bind("Print", hl.dsp.exec_cmd("flameshot gui"))
 
 hl.bind(mainMod .. " + V", hl.dsp.exec_cmd("cliphist list | rofi -dmenu | cliphist decode | wl-copy"))
 
-hl.bind(mainMod .. " + F4", hl.dsp.exec_cmd("zsh -lc '~/.config/waybar/scripts/power-menu.sh'"))
-hl.bind(mainMod .. " + A", hl.dsp.exec_cmd("swaync-client -t")) -- example of dispatching a command directly to Hyprland without using hl.dsp.exit()
+hl.bind(mainMod .. " + F4", hl.dsp.exec_cmd("zsh -lc '~/.config/hypr/scripts/power.sh'"))
+hl.bind(mainMod .. " + A", hl.dsp.exec_cmd("swaync-client -t"))
 
 -- Move focus with mainMod + arrow keys
 hl.bind(mainMod .. " + left",  hl.dsp.focus({ direction = "left" }))

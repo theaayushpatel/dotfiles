@@ -26,7 +26,7 @@ hl.bind(mainMod .. " + V", hl.dsp.exec_cmd("cliphist list | rofi -dmenu | cliphi
 
 hl.bind(mainMod .. " + F4", hl.dsp.exec_cmd("zsh -lc '~/.config/hypr/scripts/power.sh'"))
 hl.bind(mainMod .. " + A", hl.dsp.exec_cmd("swaync-client -t"))
-
+hl.bind(mainMod .. " + O", hl.dsp.exec_cmd("zsh -lc '~/.config/hypr/scripts/finder.sh'"))
 -- Move focus with mainMod + arrow keys
 hl.bind(mainMod .. " + left",  hl.dsp.focus({ direction = "left" }))
 hl.bind(mainMod .. " + right", hl.dsp.focus({ direction = "right" }))

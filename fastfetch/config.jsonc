@@ -44,6 +44,12 @@
       "format": "{1}x{2} @ {3}Hz [{7}]",
       "keyColor": "red"
     },
+{
+    "type": "command",
+    "key": "  OS Age      ",
+    "keyColor": "red",
+    "text": "echo $(( ($(date +%s) - $(stat -c %W /)) / 86400 )) days"
+},
     {
       "type": "custom",
       "format": "└──────────────────────────────────────────────────────────────────┘"

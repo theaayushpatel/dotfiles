@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-DATA=$(curl -sf "https://wttr.in/?format=j1") || exit 1
+DATA=$(curl -sf "https://wttr.in/Vijapur,Gujarat?format=j1") || exit 1
 
 CITY=$(jq -r '.nearest_area[0].areaName[0].value' <<< "$DATA")
 REGION=$(jq -r '.nearest_area[0].region[0].value' <<< "$DATA")

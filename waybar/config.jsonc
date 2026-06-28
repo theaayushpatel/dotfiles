@@ -46,7 +46,7 @@
 
   "hyprland/workspaces": {
     "disable-scroll": true,
-    "all-outputs": true,
+    "all-outputs": false,
     "cursor": true,
     "format": "{icon}",
     "format-icons": {
@@ -61,8 +61,9 @@
     "9": "九",
     "10": "十"
   },
-    "persistent-workspaces": {
-      "*": 10
+  "persistent-workspaces": {
+        "eDP-1": [1, 2, 3, 4, 5],
+        "HDMI-A-1": [6, 7, 8, 9, 10]
     }
   },
 

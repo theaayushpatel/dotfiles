@@ -1,0 +1,265 @@
+server:
+  host: 0.0.0.0
+  port: 8563
+
+theme:
+  background-color: 50 1 6
+  primary-color: 198 100 64
+  negative-color: 209 88 54
+
+branding:
+  # With support for HTML
+  # custom-footer: |
+  #   <p>Powered by <a href="https://github.com/glanceapp/glance">Glance</a></p>
+
+  # Or remove the footer entirely
+  hide-footer: true
+
+  # logo-url: /assets/logo.png
+  # favicon-url: /assets/logo.png
+
+
+pages:
+  - name: Home
+    # Optionally, if you only have a single page you can hide the desktop navigation for a cleaner look
+    # hide-desktop-navigation: true
+
+    head-widgets:
+      - type: markets
+      # Go to finance.yahoo.com and search for the symbol you want to add. The symbol is the part after the "=" in the URL.
+      # For example, the symbol for USD to INR is "INR=X" and the
+        hide-header: true
+        # chart-link-template: https://www.tradingview.com/chart/?symbol={SYMBOL}
+        markets:
+          - symbol: BTC-USD
+            name: Bitcoin
+          - symbol: ETH-USD
+            name: Ethereum
+          - symbol: INR=X
+            name: USD to INR
+          - symbol: EURINR=X
+            name: EUR to INR
+          - symbol: EURUSD=X
+            name: EUR to USD
+
+    columns:
+      - size: small
+        widgets:
+          # - type: calendar
+          #   first-day-of-week: monday
+          # - type: bookmarks
+          #   groups:
+          #     - title: Views
+          #       links:
+          #         - title: Market
+          #           url: /markets
+          #         - title: Cryptor
+          #           url: /crypto
+          #         - title: Security
+          #           url: /security
+
+          - type: clock
+            hour-format: 24h
+            timezones:
+              - timezone: Europe/Berlin
+                label: Berlin
+              - timezone: Europe/London
+                label: London
+              - timezone: America/New_York
+                label: New York
+              - timezone: Asia/Tokyo
+                label: Tokyo
+              - timezone: Atlantic/Reykjavik
+                label: Reykjavik
+          - type: weather
+            location: Vijapur, India
+            units: metric # alternatively "imperial"
+            hour-format: 24h # alternatively "24h"
+            # Optionally hide the location from being displayed in the widget
+            # hide-location: true
+          
+
+          # - type: twitch-channels
+          #   channels:
+          #     - theprimeagen
+          #     - j_blow
+          #     - giantwaffle
+          #     - cohhcarnage
+          #     - christitustech
+          #     - EJ_SA
+          # - type: reddit
+          #   subreddit: technology
+
+      - size: full
+        widgets:
+          # - type: search
+          #   search-engine: duckduckgo
+          #   bangs:
+          #     - title: YouTube
+          #       shortcut: "!yt"
+          #       url: https://www.youtube.com/results?search_query={QUERY}
+          
+
+          - type: videos
+            channels:
+              - UCXuqSBlHAE6Xw-yeJA0Tunw # Linus Tech Tips
+              - UCBJycsmduvYEL83R_U4JriQ # Marques Brownlee
+              - UChp9CTuvR1yfh_qLnvxm8cA # Andrew
+              - UCbDmEdLs-SB3FjrDFQJ4TDg # Reysu
+              - UCYO_jab_esuFRV4b17AJtAw # 3Blue1Brown
+              - UCcaTUtGzOiS4cqrgtcsHYWg # jvscholz
+
+          - type: group
+            widgets:
+              - type: hacker-news
+              - type: lobsters
+
+
+          - type: group
+            widgets:
+              - type: reddit
+                subreddit: technology
+                show-thumbnails: true
+              - type: reddit
+                subreddit: selfhosted
+                show-thumbnails: true
+
+      - size: small
+        widgets:
+          
+
+          - type: monitor
+            cache: 1m
+            title: Services
+            sites:
+              - title: Syncthing
+                url: http://127.0.0.1:8384
+                icon: si:syncthing
+              - title: Ollama
+                url: http://127.0.0.1:11434
+                icon: si:ollama
+
+          - type: releases
+            cache: 1d
+            # Without authentication the Github API allows for up to 60 requests per hour. You can create a
+            # read-only token from your Github account settings and use it here to increase the limit.
+            repositories:
+              - glanceapp/glance
+              - syncthing/syncthing
+              - bitcoin/bitcoin
+
+          - type: rss
+            limit: 10
+            collapse-after: 3
+            cache: 12h
+            feeds:
+              - url: https://selfh.st/rss/
+                title: selfh.st
+                limit: 4
+              - url: https://ciechanow.ski/atom.xml
+              - url: https://www.joshwcomeau.com/rss.xml
+                title: Josh Comeau
+              - url: https://samwho.dev/rss.xml
+              - url: https://ishadeed.com/feed.xml
+                title: Ahmad Shadeed
+
+  # Add more pages here:
+  # - name: Your page name
+  #   columns:
+  #     - size: small
+  #       widgets:
+  #         # Add widgets here
+
+  #     - size: full
+  #       widgets:
+  #         # Add widgets here
+
+  #     - size: small
+  #       widgets:
+  #         # Add widgets here
+  - name: Markets
+    columns:
+      - size: small
+        widgets:
+          - type: markets
+            title: Indices
+            markets:
+              - symbol: SPY
+                name: S&P 500
+              - symbol: DX-Y.NYB
+                name: Dollar Index
+
+          - type: markets
+            title: Crypto
+            markets:
+              - symbol: BTC-USD
+                name: Bitcoin
+              - symbol: ETH-USD
+                name: Ethereum
+
+          - type: markets
+            title: Stocks
+            sort-by: absolute-change
+            markets:
+              - symbol: NVDA
+                name: NVIDIA
+              - symbol: AAPL
+                name: Apple
+              - symbol: MSFT
+                name: Microsoft
+              - symbol: GOOGL
+                name: Google
+              - symbol: AMD
+                name: AMD
+              - symbol: RDDT
+                name: Reddit
+              - symbol: AMZN
+                name: Amazon
+              - symbol: TSLA
+                name: Tesla
+              - symbol: INTC
+                name: Intel
+              - symbol: META
+                name: Meta
+
+      - size: full
+        widgets:
+          - type: rss
+            title: News
+            style: horizontal-cards
+            feeds:
+              - url: https://feeds.bloomberg.com/markets/news.rss
+                title: Bloomberg
+              - url: https://moxie.foxbusiness.com/google-publisher/markets.xml
+                title: Fox Business
+              - url: https://moxie.foxbusiness.com/google-publisher/technology.xml
+                title: Fox Business
+
+          - type: group
+            widgets:
+              - type: reddit
+                show-thumbnails: true
+                subreddit: technology
+              - type: reddit
+                show-thumbnails: true
+                subreddit: wallstreetbets
+
+          - type: videos
+            style: grid-cards
+            collapse-after-rows: 3
+            channels:
+              - UCvSXMi2LebwJEM1s4bz5IBA # New Money
+              - UCV6KDgJskWaEckne5aPA0aQ # Graham Stephan
+              - UCAzhpt9DmG6PnHXjmJTvRGQ # Federal Reserve
+
+      - size: small
+        widgets:
+          - type: rss
+            title: News
+            limit: 30
+            collapse-after: 13
+            feeds:
+              - url: https://www.ft.com/technology?format=rss
+                title: Financial Times
+              - url: https://feeds.a.dj.com/rss/RSSMarketsMain.xml
+                title: Wall Street Journal

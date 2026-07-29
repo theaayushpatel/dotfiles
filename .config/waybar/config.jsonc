@@ -198,7 +198,7 @@
   },
  "bluetooth": {
     "format": "{num_connections}",
-    "format-disabled": "󰂲 {status}",
+    "format-disabled": "󰂲 ",
     "format-connected": "󰂱 {num_connections}",
     "tooltip-format": "Devices connected: {num_connections}",
     "on-click": "blueman-manager"

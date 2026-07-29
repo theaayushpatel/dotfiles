@@ -151,3 +151,5 @@ _fzf_compgen_dir() {
   fd --type=d --hidden --exclude .git . "$1"
 }
 export PATH=$PATH:/home/aayush/.spicetify
+fpath=(/home/aayush/.local/share/zsh-completion/completions $fpath) # avalanche completion
+rm -f ~/.zcompdump; compinit # avalanche completion

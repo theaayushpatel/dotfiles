@@ -108,7 +108,7 @@
 "cpu": {
     "interval": 5,
     "format": "<span color='#47c8ff'>cpu</span> {usage:02}%",
-    "on-click": "zsh -lc 'kitty -e btop'",
+    "on-click": "zsh -lc 'ghostty -e btop'",
     "states": {
         "warning": 50,
         "critical": 80
@@ -118,7 +118,7 @@
     "interval": 5,
     "format": "<span color='#47c8ff'>mem</span> {percentage:02}%",
     "tooltip-format": "Used {percentage}%\n{used:0.1f}GB/{total:0.1f}GB",
-    "on-click": "zsh -lc 'kitty -e btop'",
+    "on-click": "zsh -lc 'ghostty -e btop'",
     "states": {
         "warning": 50,
         "critical": 80
@@ -135,7 +135,7 @@
     "exec": "gpu-usage-waybar --text-format '<span color=\"#47c8ff\">gpu</span> {gpu_utilization}% <span color=\"#47c8ff\">vram</span> {mem_utilization}%'",
     "return-type": "json",
     "format": "{}",
-    "on-click": "zsh -lc 'kitty -e nvtop'"
+    "on-click": "zsh -lc 'ghostty -e nvtop'"
 },
  "backlight": {
     "device": "amdgpu_bl1",

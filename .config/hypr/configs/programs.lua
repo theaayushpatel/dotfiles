@@ -4,7 +4,7 @@
 
 -- Set programs that you use
 return {
-    terminal    = "kitty",
+    terminal    = "ghostty",
     fileManager = "dolphin",
     menu        = "rofi -show drun -show-icons",
     runner      = "rofi -show run",

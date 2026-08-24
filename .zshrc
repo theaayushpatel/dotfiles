@@ -153,3 +153,4 @@ _fzf_compgen_dir() {
 export PATH=$PATH:/home/aayush/.spicetify
 fpath=(/home/aayush/.local/share/zsh-completion/completions $fpath) # avalanche completion
 rm -f ~/.zcompdump; compinit # avalanche completion
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"

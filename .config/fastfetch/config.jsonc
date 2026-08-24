@@ -2,12 +2,12 @@
   "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json",
   "logo": {
     "type": "auto",        // Logo type: auto, builtin, small, file, etc.
-    "source": "~/.config/fastfetch/gojo.png",      // Built-in logo name or file path
-    "width": 40,           // Width in characters (for image logos)
+    "source": "arch3",      // Built-in logo name or file path
+    //"width": 40,           // Width in characters (for image logos)
     // "height": 38,          // Height in characters (for image logos)
     "padding": {
-        "top": 1,          // Top padding
-        "left": 4,         // Left padding
+        //"top": 1,          // Top padding
+        //"left": 4,         // Left padding
         //"right": 3         // Right padding
     }
   },

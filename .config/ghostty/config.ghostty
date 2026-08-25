@@ -1,0 +1,66 @@
+# =========================
+# Appearance
+# =========================
+
+theme = Catppuccin Mocha
+
+font-family = "JetBrainsMono Nerd Font"
+font-size = 11
+
+background-opacity = 0.90
+background-blur = true
+
+window-width = 120
+window-height = 35
+
+window-theme = ghostty
+
+# =========================
+# Terminal
+# =========================
+
+scrollback-limit = 100000000
+
+mouse-hide-while-typing = true
+
+copy-on-select = false
+
+clipboard-read = allow
+clipboard-write = allow
+
+confirm-close-surface = false
+
+# =========================
+# Working Directory
+# =========================
+
+window-inherit-working-directory = true
+tab-inherit-working-directory = true
+
+# =========================
+# Kitty-style Keybinds
+# =========================
+
+keybind = ctrl+t=new_tab
+
+keybind = ctrl+tab=next_tab
+keybind = ctrl+shift+tab=previous_tab
+
+keybind = ctrl+w=close_tab
+
+keybind = ctrl+n=new_window
+
+keybind = ctrl+q=close_window
+
+keybind = ctrl+1=goto_tab:1
+keybind = ctrl+2=goto_tab:2
+keybind = ctrl+3=goto_tab:3
+keybind = ctrl+4=goto_tab:4
+keybind = ctrl+5=goto_tab:5
+keybind = ctrl+6=goto_tab:6
+keybind = ctrl+7=goto_tab:7
+keybind = ctrl+8=goto_tab:8
+keybind = ctrl+9=goto_tab:9
+
+# Reload Config
+keybind = ctrl+shift+r=reload_config

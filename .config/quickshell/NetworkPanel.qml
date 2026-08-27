@@ -5,7 +5,6 @@ import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
 import Quickshell.Hyprland
-import "NetworkModel.js" as NetworkModel
 import "."
 
 PanelWindow {
@@ -69,6 +68,84 @@ PanelWindow {
     windows: [ root ]
     active: root.opened && !root.passwordOpen && !root.qrOpen
     onCleared: root.closePanel()
+  }
+
+  // --- Network Helpers & Parsers ---
+  function parseDetails(raw) {
+    var result = {}
+    String(raw || "").split("\n").forEach(function(line) {
+      var parts = line.split("\t")
+      if (parts.length >= 2) result[parts[0]] = parts.slice(1).join("\t").trim()
+    })
+    return result
+  }
+
+  function parseNetworks(raw) {
+    return String(raw || "").split("\n").filter(function(line) {
+      return line.trim() !== ""
+    }).map(function(line) {
+      var parts = []
+      var current = ""
+      var escaped = false
+      for (var i = 0; i < line.length; i++) {
+        var character = line[i]
+        if (escaped) {
+          current += character
+          escaped = false
+        } else if (character === "\\") {
+          escaped = true
+        } else if (character === ":") {
+          parts.push(current)
+          current = ""
+        } else {
+          current += character
+        }
+      }
+      parts.push(current)
+      return {
+        active: parts[0] === "yes" || parts[0] === "*",
+        ssid: parts.slice(1, -2).join(":") || "Hidden network",
+        signal: parseInt(parts[parts.length - 2], 10) || 0,
+        security: parts[parts.length - 1] || ""
+      }
+    }).filter(function(network) { return network.ssid !== "Hidden network" })
+  }
+
+  function parseKnown(raw) {
+    return String(raw || "").split("\n").map(function(value) {
+      return value.trim()
+    }).filter(function(value) { return value !== "" })
+  }
+
+  function wifiIcon(signal) {
+    if (signal >= 80) return "󰤨"
+    if (signal >= 60) return "󰤥"
+    if (signal >= 40) return "󰤢"
+    if (signal >= 20) return "󰤟"
+    return "󰤯"
+  }
+
+  function formatBytes(value) {
+    var number = Number(value) || 0
+    if (number < 1024) return Math.round(number) + " B"
+    if (number < 1048576) return (number / 1024).toFixed(1) + " KB"
+    if (number < 1073741824) return (number / 1048576).toFixed(1) + " MB"
+    return (number / 1073741824).toFixed(2) + " GB"
+  }
+
+  function rate(previousBytes, currentBytes, previousTime, currentTime) {
+    var elapsed = (Number(currentTime) - Number(previousTime)) / 1000
+    if (!isFinite(elapsed) || elapsed <= 0) return 0
+    return Math.max(0, (Number(currentBytes) - Number(previousBytes)) / elapsed)
+  }
+
+  function escapeWifi(value) {
+    return String(value || "").replace(/([\\;,":])/g, "\\$1")
+  }
+
+  function wifiQr(ssid, password, security) {
+    var type = security && security !== "--" && security !== "NONE" ? "WPA" : "nopass"
+    return "WIFI:T:" + type + ";S:" + escapeWifi(ssid) + ";P:" + escapeWifi(password) + ";;"
   }
 
   function shellQuote(value) {
@@ -212,7 +289,7 @@ PanelWindow {
           Text {
             text: root.details.type === "ethernet"
               ? "󰈀"
-              : root.details.ssid ? NetworkModel.wifiIcon(100) : root.wifiEnabled ? "󰤨" : "󰤮"
+              : root.details.ssid ? root.wifiIcon(100) : root.wifiEnabled ? "󰤨" : "󰤮"
             color: root.details.ssid ? Theme.accent : !root.wifiEnabled ? Theme.fgMuted : Theme.fg
             font.family: Theme.font
             font.pixelSize: 28
@@ -292,9 +369,9 @@ PanelWindow {
           Text { text: root.details.loss || "--"; color: Theme.fg; font.family: Theme.font; font.pixelSize: 11; font.bold: true; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
 
           Text { text: "Down"; color: Theme.fgMuted; font.family: Theme.font; font.pixelSize: 11 }
-          Text { text: NetworkModel.formatBytes(root.downloadRate) + "/s"; color: Theme.accent; font.family: Theme.font; font.pixelSize: 11; font.bold: true; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
+          Text { text: root.formatBytes(root.downloadRate) + "/s"; color: Theme.accent; font.family: Theme.font; font.pixelSize: 11; font.bold: true; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
           Text { text: "Up"; color: Theme.fgMuted; font.family: Theme.font; font.pixelSize: 11 }
-          Text { text: NetworkModel.formatBytes(root.uploadRate) + "/s"; color: Theme.accent; font.family: Theme.font; font.pixelSize: 11; font.bold: true; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
+          Text { text: root.formatBytes(root.uploadRate) + "/s"; color: Theme.accent; font.family: Theme.font; font.pixelSize: 11; font.bold: true; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
 
           Text { text: "IP"; color: Theme.fgMuted; font.family: Theme.font; font.pixelSize: 11 }
           Text { text: root.details.ip || "--"; color: Theme.fg; font.family: Theme.font; font.pixelSize: 11; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
@@ -404,7 +481,7 @@ PanelWindow {
                   spacing: 10
 
                   Text {
-                    text: NetworkModel.wifiIcon(modelData.signal)
+                    text: root.wifiIcon(modelData.signal)
                     color: modelData.active ? Theme.accent : Theme.fgMuted
                     font.family: Theme.font
                     font.pixelSize: 18
@@ -719,11 +796,11 @@ PanelWindow {
     stdout: StdioCollector {
       waitForEnd: true
       onStreamFinished: function() {
-        var next = NetworkModel.parseDetails(text)
+        var next = root.parseDetails(text)
         var now = Date.now()
         if (root.previousSampleTime > 0) {
-          root.downloadRate = NetworkModel.rate(root.previousRx, next.rx, root.previousSampleTime, now)
-          root.uploadRate = NetworkModel.rate(root.previousTx, next.tx, root.previousSampleTime, now)
+          root.downloadRate = root.rate(root.previousRx, next.rx, root.previousSampleTime, now)
+          root.uploadRate = root.rate(root.previousTx, next.tx, root.previousSampleTime, now)
         }
         root.previousRx = Number(next.rx || 0)
         root.previousTx = Number(next.tx || 0)
@@ -738,7 +815,7 @@ PanelWindow {
     stdout: StdioCollector {
       waitForEnd: true
       onStreamFinished: function() {
-        root.networks = NetworkModel.parseNetworks(text)
+        root.networks = root.parseNetworks(text)
         root.scanning = false
       }
     }
@@ -750,7 +827,7 @@ PanelWindow {
     stdout: StdioCollector {
       waitForEnd: true
       onStreamFinished: function() {
-        root.knownNetworks = NetworkModel.parseKnown(text)
+        root.knownNetworks = root.parseKnown(text)
       }
     }
   }
@@ -796,7 +873,7 @@ PanelWindow {
         var password = String(text || "").trim()
         root.qrPassword = password
         var security = root.details.security || "WPA"
-        var payload = NetworkModel.wifiQr(root.details.ssid, password, security)
+        var payload = root.wifiQr(root.details.ssid, password, security)
         root.qrText = "Could not render QR image.\n" + payload
         root.qrImagePath = ""
         qrCodeProc.command = ["bash", "-lc", "qrencode -o " + root.shellQuote(root.qrFilePath) + " " + root.shellQuote(payload)]

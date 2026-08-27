@@ -1,6 +1,6 @@
 @define-color bg @background;
 @define-color fg @foreground;
-@define-color red #47c8ff;
+@define-color blue #47c8ff;
 
 
 * {
@@ -76,8 +76,8 @@ button:hover {
 
 #workspaces button.active {
     opacity: 1;
-    color: @red;
-    border-bottom: 1px solid @red;
+    color: @blue;
+    border-bottom: 1px solid @blue;
     border-radius: 1px;
     background: transparent;
     transition: 0.1s;
@@ -91,8 +91,8 @@ button:hover {
 #mpris:hover,
 #workspaces button:hover {
     opacity: 1;
-    color: @red;
-    border-bottom: 1px solid @red;
+    color: @blue;
+    border-bottom: 1px solid @blue;
     background: transparent;
     transition: 0.1s; 
     margin-bottom: 1px;
@@ -130,7 +130,7 @@ button:hover {
 }
 
 #custom-omarchy {
-  color: @red;
+  color: @blue;
   font-size: 14px;
   padding: 0px 4px 0px 0px;
   margin: 0 4px;
@@ -141,7 +141,7 @@ button:hover {
 }
 
 #idle_inhibitor.activated {
-    color: @red;
+    color: @blue;
 }
 
 #custom-expand-icon {

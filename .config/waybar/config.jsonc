@@ -174,7 +174,7 @@
     "tooltip-format-disconnected": "Disconnected",
     "interval": 3,
     "spacing": 1,
-    "on-click": "zsh -lc '~/.config/waybar/scripts/network-menu.sh'"
+    "on-click": "quickshell ipc -p ~/.config/quickshell call shell toggleNetwork"
   },
 "battery": {
     "format": "{icon} {capacity}%",
@@ -201,7 +201,7 @@
     "format-disabled": "󰂲 ",
     "format-connected": "󰂱 {num_connections}",
     "tooltip-format": "Devices connected: {num_connections}",
-    "on-click": "blueman-manager"
+    "on-click": "quickshell ipc -p ~/.config/quickshell call shell toggleBluetooth"
   },
 "pulseaudio#input": {
     "format": "<span color='#47c8ff'>mic</span> {source_volume}%",
@@ -210,7 +210,7 @@
     "scroll-step": 1,
     "smooth-scrolling-threshold": 1,
     "max-volume": 100,
-    "on-click": "pavucontrol",
+    "on-click": "quickshell ipc -p ~/.config/quickshell call shell toggleAudio",
     "on-click-right": "pactl set-source-mute @DEFAULT_SOURCE@ toggle",
     "on-scroll-up": "pactl set-source-volume @DEFAULT_SOURCE@ +1%",
     "on-scroll-down": "pactl set-source-volume @DEFAULT_SOURCE@ -1%"
@@ -236,7 +236,7 @@
   },
 
   "tray": {
-    "icon-size": 16,
+    "icon-size": 14,
     "spacing": 6
   },
   // "custom/screenrecording-indicator": {

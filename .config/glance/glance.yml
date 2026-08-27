@@ -141,6 +141,7 @@ pages:
 
           - type: releases
             cache: 1d
+            token: ${GITHUB_TOKEN}
             # Without authentication the Github API allows for up to 60 requests per hour. You can create a
             # read-only token from your Github account settings and use it here to increase the limit.
             repositories:

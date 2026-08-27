@@ -90,7 +90,7 @@
 
   "custom/power": {
     "format": "   ",
-    "on-click": "zsh -lc '~/.config/waybar/scripts/power-menu.sh'",
+    "on-click": "quickshell ipc -p ~/.config/quickshell call shell togglePower",
     "on-click-right": "xdg-terminal-exec",
     "tooltip-format": "Power menu\nClick to open"
   },

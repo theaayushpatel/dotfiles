@@ -1,11 +1,16 @@
 configuration {
-/*	modes: "window,drun,run,ssh";*/
+	modes: "drun,run,filebrowser,window";
+	show-icons: true;
+	display-drun: "  Apps";
+	display-run: "  Run";
+	display-filebrowser: "  Files";
+	display-window: "  Windows";
+	drun-display-format: "{name}";
 /*	font: "mono 12";*/
 /*	location: 0;*/
 /*	yoffset: 0;*/
 /*	xoffset: 0;*/
 /*	fixed-num-lines: true;*/
-/*	show-icons: false;*/
 /*	preview-cmd: ;*/
 /*	on-selection-changed: ;*/
 /*	on-mode-changed: ;*/
@@ -167,4 +172,4 @@ configuration {
   }
 }
 
-@theme "/home/aayush/.local/share/rofi/themes/spotlight-dark.rasi"
+@theme "~/.config/rofi/theme.rasi"

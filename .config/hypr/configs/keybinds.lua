@@ -17,15 +17,15 @@ hl.bind(mainMod .. " + L", hl.dsp.exec_cmd("hyprlock"))
 hl.bind(mainMod .. " + E", hl.dsp.exec_cmd(p.fileManager))
 hl.bind(mainMod .. " + F", hl.dsp.window.float({ action = "toggle" }))
 hl.bind("ALT + space", hl.dsp.exec_cmd(p.menu))
-hl.bind(mainMod .. " + space", hl.dsp.exec_cmd(p.runner))
+-- hl.bind(mainMod .. " + space", hl.dsp.exec_cmd("zsh -lc '~/.config/rofi/scripts/palette.sh'"))
 hl.bind(mainMod .. " + P", hl.dsp.window.pseudo())
 hl.bind(mainMod .. " + J", hl.dsp.layout("togglesplit"))    -- dwindle only
 hl.bind("Print", hl.dsp.exec_cmd("flameshot gui"))
 
 hl.bind(mainMod .. " + V", hl.dsp.exec_cmd("cliphist list | rofi -dmenu | cliphist decode | wl-copy"))
 
-hl.bind(mainMod .. " + F4", hl.dsp.exec_cmd("zsh -lc '~/.config/hypr/scripts/power.sh'"))
-hl.bind(mainMod .. " + A", hl.dsp.exec_cmd("swaync-client -t"))
+-- hl.bind(mainMod .. " + F4", hl.dsp.exec_cmd("zsh -lc '~/.config/hypr/scripts/power.sh'"))
+hl.bind(mainMod .. "+ CTRL + A", hl.dsp.exec_cmd("swaync-client -t"))
 hl.bind(mainMod .. " + O", hl.dsp.exec_cmd("zsh -lc '~/.config/hypr/scripts/finder.sh'"))
 -- Move focus with mainMod + arrow keys
 hl.bind(mainMod .. " + left",  hl.dsp.focus({ direction = "left" }))

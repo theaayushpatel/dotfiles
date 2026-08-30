@@ -10,38 +10,34 @@
   "margin-right": 0,
   "margin-bottom": 0,
   "modules-left": [
-    "custom/weather",
-    "custom/separator3",
     "clock",
     "custom/separator",
-    "cpu",
-    "memory",
-    "custom/gpu-usage",
-    "custom/separator",
-    "pulseaudio#input",
-    "pulseaudio#output"
-    // "custom/screenrecording-indicator"
-    
+    "hyprland/workspaces"
+    // "cpu",
+    // "memory",
+    // "custom/gpu-usage",
+    // "custom/separator"
   ],
   "modules-center": [
  "mpris"
   ],
   "modules-right": [
     
-    "hyprland/workspaces",
-    "custom/separator",
+    
     "network",
     "custom/separator",
     "bluetooth",
     "backlight",
     "custom/separator",
-    "tray",
+    "pulseaudio#input",
+    "pulseaudio#output",
     "custom/separator",
-    "power-profiles-daemon",
-    "battery",
+    "group/tray-drawer",
     "custom/notification",
     "custom/separator",
-    "custom/power"
+    "power-profiles-daemon",
+    "battery"
+    // "custom/power"
   ],
 
   "hyprland/workspaces": {
@@ -81,19 +77,12 @@
     "tooltip": false
 },
 
-"custom/weather": {
-    "exec": "~/.config/waybar/scripts/weather.sh",
-    "return-type": "json",
-    "interval": 300,
-    "tooltip": true
-},
-
-  "custom/power": {
-    "format": "   ",
-    "on-click": "quickshell ipc -p ~/.config/quickshell call shell togglePower",
-    "on-click-right": "xdg-terminal-exec",
-    "tooltip-format": "Power menu\nClick to open"
-  },
+  // "custom/power": {
+  //   "format": "   ",
+  //   "on-click": "quickshell ipc -p ~/.config/quickshell call shell togglePower",
+  //   "on-click-right": "xdg-terminal-exec",
+  //   "tooltip-format": "Power menu\nClick to open"
+  // },
 
 "power-profiles-daemon": {
     "format": "{icon}",
@@ -124,13 +113,26 @@
         "critical": 80
     }
 },
-"custom/notification": {
-    "exec": "swaync-client -D | grep -q true && echo '  ' || echo '  '",
-    "interval": 2,
-    "on-click": "swaync-client -t",
-    "on-click-right": "swaync-client -d",
-    "tooltip": false
-},
+  "custom/notification": {
+    "tooltip": false,
+    "format": "{icon}",
+    "format-icons": {
+      "notification": "<span foreground='#47c8ff'><sup></sup></span>",
+      "none": "",
+      "dnd-notification": "<span foreground='#47c8ff'><sup></sup></span>",
+      "dnd-none": "",
+      "inhibited-notification": "<span foreground='#47c8ff'><sup></sup></span>",
+      "inhibited-none": "",
+      "dnd-inhibited-notification": "<span foreground='#47c8ff'><sup></sup></span>",
+      "dnd-inhibited-none": ""
+    },
+    "return-type": "json",
+    "exec-if": "which swaync-client",
+    "exec": "swaync-client -swb",
+    "on-click": "swaync-client -t -sw",
+    "on-click-right": "swaync-client -d -sw",
+    "escape": true
+  },
  "custom/gpu-usage": {
     "exec": "gpu-usage-waybar --text-format '<span color=\"#47c8ff\">gpu</span> {gpu_utilization}% <span color=\"#47c8ff\">vram</span> {mem_utilization}%'",
     "return-type": "json",
@@ -139,31 +141,21 @@
 },
  "backlight": {
     "device": "amdgpu_bl1",
-    "format": "{icon}",
+    "format": "{icon} {percent}%",
     "tooltip": true,
-    "tooltip-format": "Brightness:  {percent}%",
+    "tooltip-format": "Click to open brightness control\nScroll to adjust brightness",
     "format-alt": "{icon} {percent}%",
     "format-alt-click": "click-right",
     "format-icons": ["󰃜", "󰃝", "󰃞", "󰃟", "󰃠"],
     "on-scroll-down": "brightnessctl s 5%-",
-    "on-scroll-up": "brightnessctl s +5%"
+    "on-scroll-up": "brightnessctl s +5%",
+    "on-click": "quickshell ipc -p ~/.config/quickshell call shell toggleBrightness"
   },
    "clock": {
     "format": "<span color='#47c8ff'>{0:%H:%M}</span> <span size='small' color='#ffffff'><i>{0:%a, %b %d}</i></span>",
-    "format-alt": "{:L%d %B W%V %Y}",
-    "tooltip-format": "<span>{calendar}</span>",
-    "calendar": {
-      "mode": "month",
-      "mode-mon-col": 3,
-      "on-click-right": "mode",
-      "format": {
-        "month": "<span color='#ffead3'><b>{}</b></span>",
-        "weekdays": "<span color='#ffcc66'><b>{}</b></span>",
-        "today": "<span color='#ff6699'><b>{}</b></span>"
-      }
-    },
-    // "on-click-right": "omarchy-launch-floating-terminal-with-presentation omarchy-tz-select"
-},
+    "tooltip": false,
+    "on-click": "quickshell ipc -p ~/.config/quickshell call shell toggleClock"
+  },
   "network": {
     "format": "<span color='#47c8ff'>net</span> on",
     "format-wifi": "<span color='#47c8ff'>wifi</span> {essid}",
@@ -180,16 +172,16 @@
     "format": "{icon} {capacity}%",
     "format-discharging": "{icon} {capacity}%",
     "format-charging": "{icon} {capacity}%",
-    "format-plugged": "",
+    "format-plugged": "󰂅 {capacity}%",
     "format-icons": {
       "charging": ["󰢜", "󰂆", "󰂇", "󰂈", "󰢝", "󰂉", "󰢞", "󰂊", "󰂋", "󰂅"],
       "default": ["󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"]
     },
-    "format-full": "󰂅",
+    "format-full": "󰂅 {capacity}%",
     "tooltip-format-discharging": "{power:>1.0f}W↓ {capacity}%",
     "tooltip-format-charging": "{power:>1.0f}W↑ {capacity}%",
     "interval": 5,
-    // "on-click": "omarchy-menu power",
+    "on-click": "quickshell ipc -p ~/.config/quickshell call shell togglePower",
     // "on-click-right": "notify-send -u low \"$(omarchy-battery-status)\"",
     "states": {
       "warning": 20,
@@ -204,9 +196,10 @@
     "on-click": "quickshell ipc -p ~/.config/quickshell call shell toggleBluetooth"
   },
 "pulseaudio#input": {
-    "format": "<span color='#47c8ff'>mic</span> {source_volume}%",
-    "format-muted": "<span color='#47c8ff'>mic</span> muted",
-    "tooltip-format": "mic {source_volume}%",
+    "format": "{format_source}",
+    "format-source": "<span color='#47c8ff'>mic</span> {volume}%",
+    "format-source-muted": "<span color='#47c8ff'>mic</span> muted",
+    "tooltip-format": "{format_source}",
     "scroll-step": 1,
     "smooth-scrolling-threshold": 1,
     "max-volume": 100,
@@ -222,23 +215,44 @@
     "max-volume": 100,
     "scroll-step": 2,
     "smooth-scrolling-threshold": 1,
-    "on-click": "pavucontrol",
+    "on-click": "quickshell ipc -p ~/.config/quickshell call shell toggleAudio",
     "on-click-right": "pactl set-sink-mute @DEFAULT_SINK@ toggle"
 },
- "mpris": {
+  "mpris": {
     "format": "{dynamic}",
     "format-paused": "<span color='#47c8ff'>paused</span> {dynamic}",
     "interval": 1, 
     "dynamic-order": ["title", "position", "length"], 
     "dynamic-importance-order": ["position", "length", "title"],
     "tooltip-format": "{player} ({status}):\n{artist} - {title}",  
-    "ignored-players": ["firefox", "brave"]
+    "ignored-players": ["firefox", "brave"],
+    "on-click": "quickshell ipc -p ~/.config/quickshell call shell toggleMedia"
+  },
+
+  "group/tray-drawer": {
+    "orientation": "horizontal",
+    "drawer": {
+      "transition-duration": 300,
+      "transition-left-to-right": false,
+      "click-to-reveal": true
+    },
+    "modules": [
+      "custom/tray-icon",
+      "tray"
+    ]
+  },
+
+  "custom/tray-icon": {
+    "format": "⟨",
+    "tooltip": true,
+    "tooltip-format": "System Tray (Click to toggle)"
   },
 
   "tray": {
-    "icon-size": 14,
-    "spacing": 6
-  },
+    "icon-size": 16,
+    "spacing": 8,
+    "show-passive-items": true
+  }
   // "custom/screenrecording-indicator": {
   //   "on-click": "omarchy-capture-screenrecording",
   //   "exec": "$OMARCHY_PATH/default/waybar/indicators/screen-recording.sh",

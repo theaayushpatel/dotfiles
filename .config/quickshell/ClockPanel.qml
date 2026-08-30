@@ -17,6 +17,12 @@ PanelWindow {
   property int viewMonth: new Date().getMonth()
   property var calendarGridModel: []
 
+  // Calendar Events state
+  property bool calendarLoading: false
+  property var calendarEvents: []
+  property string calendarError: ""
+  property var selectedDayEvents: []
+
   // Weather state
   property bool weatherLoading: false
   property var weatherData: null
@@ -68,6 +74,37 @@ PanelWindow {
     now = new Date()
     updateCalendarModel()
     fetchWeather()
+    fetchCalendar()
+  }
+
+  function fetchCalendar() {
+    calendarLoading = true
+    if (typeof calendarProc !== "undefined" && calendarProc) {
+      calendarProc.running = false
+      calendarProc.running = true
+    }
+  }
+
+  function formatDateKey(y, m, d) {
+    var mm = (m + 1) < 10 ? "0" + (m + 1) : String(m + 1)
+    var dd = d < 10 ? "0" + d : String(d)
+    return y + "-" + mm + "-" + dd
+  }
+
+  function getEventsForDate(y, m, d) {
+    var key = formatDateKey(y, m, d)
+    var res = []
+    if (!calendarEvents || calendarEvents.length === 0) return res
+    for (var i = 0; i < calendarEvents.length; i++) {
+      if (calendarEvents[i].date === key) {
+        res.push(calendarEvents[i])
+      }
+    }
+    return res
+  }
+
+  function updateSelectedDayEvents() {
+    selectedDayEvents = getEventsForDate(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate())
   }
 
   function prevMonth() {
@@ -96,6 +133,7 @@ PanelWindow {
     viewMonth = today.getMonth()
     selectedDate = today
     updateCalendarModel()
+    updateSelectedDayEvents()
   }
 
   function selectDate(year, month, day) {
@@ -103,6 +141,7 @@ PanelWindow {
     viewYear = year
     viewMonth = month
     updateCalendarModel()
+    updateSelectedDayEvents()
   }
 
   function isSameDay(d, y, m, day) {
@@ -122,31 +161,39 @@ PanelWindow {
 
     var cells = []
 
+    function makeCell(dNum, mNum, yNum, isCurr) {
+      var evts = getEventsForDate(yNum, mNum, dNum)
+      var colors = []
+      for (var k = 0; k < evts.length; k++) {
+        var c = evts[k].color || "#47c8ff"
+        if (colors.indexOf(c) === -1 && colors.length < 3) {
+          colors.push(c)
+        }
+      }
+      return {
+        day: dNum,
+        month: mNum,
+        year: yNum,
+        isCurrentMonth: isCurr,
+        isToday: isSameDay(today, yNum, mNum, dNum),
+        isSelected: isSameDay(selectedDate, yNum, mNum, dNum),
+        hasEvents: evts.length > 0,
+        eventCount: evts.length,
+        eventColors: colors
+      }
+    }
+
     // Previous month trailing days
     var pMonth = viewMonth === 0 ? 11 : viewMonth - 1
     var pYear = viewMonth === 0 ? viewYear - 1 : viewYear
     for (var i = firstDayOfWeek - 1; i >= 0; i--) {
       var dNum = prevMonthLastDate - i
-      cells.push({
-        day: dNum,
-        month: pMonth,
-        year: pYear,
-        isCurrentMonth: false,
-        isToday: isSameDay(today, pYear, pMonth, dNum),
-        isSelected: isSameDay(selectedDate, pYear, pMonth, dNum)
-      })
+      cells.push(makeCell(dNum, pMonth, pYear, false))
     }
 
     // Current month days
     for (var d = 1; d <= daysInCurrentMonth; d++) {
-      cells.push({
-        day: d,
-        month: viewMonth,
-        year: viewYear,
-        isCurrentMonth: true,
-        isToday: isSameDay(today, viewYear, viewMonth, d),
-        isSelected: isSameDay(selectedDate, viewYear, viewMonth, d)
-      })
+      cells.push(makeCell(d, viewMonth, viewYear, true))
     }
 
     // Next month leading days (42 cells grid = 6 rows x 7 cols)
@@ -155,17 +202,11 @@ PanelWindow {
     var nMonth = viewMonth === 11 ? 0 : viewMonth + 1
     var nYear = viewMonth === 11 ? viewYear + 1 : viewYear
     for (var n = 1; n <= nextDays; n++) {
-      cells.push({
-        day: n,
-        month: nMonth,
-        year: nYear,
-        isCurrentMonth: false,
-        isToday: isSameDay(today, nYear, nMonth, n),
-        isSelected: isSameDay(selectedDate, nYear, nMonth, n)
-      })
+      cells.push(makeCell(n, nMonth, nYear, false))
     }
 
     calendarGridModel = cells
+    updateSelectedDayEvents()
   }
 
   function getWeatherIcon(code) {
@@ -217,8 +258,10 @@ PanelWindow {
 
   function fetchWeather() {
     weatherLoading = true
-    weatherProc.running = false
-    weatherProc.running = true
+    if (typeof weatherProc !== "undefined" && weatherProc) {
+      weatherProc.running = false
+      weatherProc.running = true
+    }
   }
 
   function pad(num) {
@@ -805,7 +848,7 @@ PanelWindow {
                     readonly property bool isHovered: dayMouse.containsMouse
 
                     width: calendarCol.width / 7
-                    height: 30
+                    height: 32
                     radius: 6
 
                     color: isToday ? Theme.accent :
@@ -816,17 +859,39 @@ PanelWindow {
                                   isSelected ? Theme.borderActive : "transparent"
                     border.width: isSelected || isToday ? 1 : 0
 
-                    Text {
+                    Column {
                       anchors.centerIn: parent
-                      text: String(modelData.day)
-                      font.family: Theme.font
-                      font.pixelSize: 12
-                      font.bold: isToday || isSelected
+                      spacing: 1
 
-                      color: isToday ? "#121218" :
-                             isSelected ? Theme.accent :
-                             !isCurrent ? Theme.fgSubtle :
-                             isWeekend ? Theme.warning : Theme.fg
+                      Text {
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        text: String(modelData.day)
+                        font.family: Theme.font
+                        font.pixelSize: 12
+                        font.bold: isToday || isSelected
+
+                        color: isToday ? "#121218" :
+                               isSelected ? Theme.accent :
+                               !isCurrent ? Theme.fgSubtle :
+                               isWeekend ? Theme.warning : Theme.fg
+                      }
+
+                      Row {
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        spacing: 2
+                        visible: modelData.hasEvents
+
+                        Repeater {
+                          model: modelData.eventColors
+                          delegate: Rectangle {
+                            required property var modelData
+                            width: 4
+                            height: 4
+                            radius: 2
+                            color: dayCell.isToday ? "#121218" : modelData
+                          }
+                        }
+                      }
                     }
 
                     MouseArea {
@@ -843,7 +908,7 @@ PanelWindow {
               // Selected Date Indicator
               Rectangle {
                 width: parent.width
-                height: 24
+                height: 26
                 radius: Theme.cardRadius
                 color: Theme.surfaceHover
                 border.color: Theme.border
@@ -859,17 +924,147 @@ PanelWindow {
                     text: "󰸗"
                     color: Theme.accent
                     font.family: Theme.font
-                    font.pixelSize: 11
+                    font.pixelSize: 12
+                    Layout.alignment: Qt.AlignVCenter
                   }
 
                   Text {
-                    text: "Selected: " + root.formattedSelectedDate
-                    color: Theme.fgMuted
+                    text: root.formattedSelectedDate
+                    color: Theme.fg
                     font.family: Theme.font
-                    font.pixelSize: 10
+                    font.pixelSize: 11
+                    font.bold: true
                     Layout.fillWidth: true
                     elide: Text.ElideRight
+                    Layout.alignment: Qt.AlignVCenter
                   }
+
+                  Text {
+                    text: root.calendarLoading ? "Syncing..." : (root.selectedDayEvents.length + (root.selectedDayEvents.length === 1 ? " event" : " events"))
+                    color: root.selectedDayEvents.length > 0 ? Theme.accent : Theme.fgMuted
+                    font.family: Theme.font
+                    font.pixelSize: 10
+                    Layout.alignment: Qt.AlignVCenter
+                  }
+                }
+              }
+
+              // Events List for Selected Day
+              Column {
+                width: parent.width
+                spacing: 6
+                visible: root.selectedDayEvents && root.selectedDayEvents.length > 0
+
+                Repeater {
+                  model: root.selectedDayEvents
+                  delegate: Rectangle {
+                    id: eventCard
+                    required property var modelData
+                    required property int index
+                    width: calendarCol.width
+                    height: eventLayout.implicitHeight + 16
+                    radius: Theme.cardRadius
+                    color: Theme.surfaceHover
+                    border.color: Theme.border
+                    border.width: 1
+
+                    RowLayout {
+                      id: eventLayout
+                      anchors.left: parent.left
+                      anchors.right: parent.right
+                      anchors.top: parent.top
+                      anchors.margins: 8
+                      spacing: 8
+
+                      // Left color strip
+                      Rectangle {
+                        width: 3
+                        Layout.fillHeight: true
+                        Layout.minimumHeight: 20
+                        radius: 1.5
+                        color: modelData.color || Theme.accent
+                      }
+
+                      Column {
+                        Layout.fillWidth: true
+                        spacing: 4
+
+                        RowLayout {
+                          width: parent.width
+                          spacing: 6
+
+                          // Calendar Tag Badge
+                          Rectangle {
+                            implicitWidth: calNameText.implicitWidth + 8
+                            implicitHeight: 18
+                            radius: 3
+                            color: Theme.surfaceActive
+                            border.color: modelData.color || Theme.accent
+                            border.width: 1
+
+                            Text {
+                              id: calNameText
+                              anchors.centerIn: parent
+                              text: modelData.calendar || "Event"
+                              color: modelData.color || Theme.accent
+                              font.family: Theme.font
+                              font.pixelSize: 9
+                              font.bold: true
+                            }
+                          }
+
+                          // Time badge
+                          Text {
+                            text: "󰥔 " + (modelData.timeStr || "All Day")
+                            color: Theme.fgMuted
+                            font.family: Theme.font
+                            font.pixelSize: 10
+                            Layout.fillWidth: true
+                          }
+                        }
+
+                        // Event Title
+                        Text {
+                          width: parent.width
+                          text: modelData.title || ""
+                          color: Theme.fg
+                          font.family: Theme.font
+                          font.pixelSize: 12
+                          font.bold: true
+                          wrapMode: Text.Wrap
+                        }
+
+                        // Event Location (if available)
+                        Text {
+                          width: parent.width
+                          text: "󰍎 " + modelData.location
+                          color: Theme.fgSubtle
+                          font.family: Theme.font
+                          font.pixelSize: 10
+                          visible: modelData.location ? (modelData.location.length > 0) : false
+                          elide: Text.ElideRight
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+
+              // Empty state when 0 events
+              Rectangle {
+                width: parent.width
+                height: 28
+                radius: Theme.cardRadius
+                color: "transparent"
+                visible: root.selectedDayEvents.length === 0
+
+                Text {
+                  anchors.centerIn: parent
+                  text: "No events scheduled for this day"
+                  color: Theme.fgSubtle
+                  font.family: Theme.font
+                  font.pixelSize: 10
+                  font.italic: true
                 }
               }
             }
@@ -1375,6 +1570,52 @@ PanelWindow {
         root.weatherLoading = false
       }
     }
+  }
+
+  // Calendar fetch process
+  Process {
+    id: calendarProc
+    command: ["bash", "-lc", "python3 /home/aayush/dotfiles/.config/quickshell/scripts/fetch_calendar.py"]
+    stdout: StdioCollector {
+      id: calendarCollector
+      waitForEnd: true
+      onStreamFinished: {
+        root.calendarLoading = false
+        var raw = String(calendarCollector.text || "").trim()
+        if (!raw) {
+          root.calendarEvents = []
+          root.updateCalendarModel()
+          return
+        }
+        try {
+          var data = JSON.parse(raw)
+          root.calendarEvents = Array.isArray(data) ? data : []
+          root.calendarError = ""
+        } catch (e) {
+          root.calendarError = "Failed to parse calendar events"
+        }
+        root.updateCalendarModel()
+      }
+    }
+    stderr: StdioCollector {
+      id: calendarErrCollector
+      waitForEnd: true
+      onStreamFinished: {
+        root.calendarLoading = false
+        var errText = String(calendarErrCollector.text || "").trim()
+        if (errText) {
+          console.log("[CALENDAR SYNC STDERR]:", errText)
+        }
+      }
+    }
+  }
+
+  // Periodic Calendar sync timer (every 15 minutes)
+  Timer {
+    interval: 900000
+    running: root.opened
+    repeat: true
+    onTriggered: root.fetchCalendar()
   }
 
   Component.onCompleted: {

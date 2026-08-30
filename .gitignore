@@ -1,0 +1,14 @@
+# Secret calendar configurations
+.config/quickshell/calendars.conf
+.config/quickshell/calendar_url
+.config/quickshell/calendar.conf
+.config/quickshell/*.ics
+.config/quickshell/cache/
+
+# General private/cache files
+*.secret
+*.ics
+*.local
+__pycache__/
+*.pyc
+

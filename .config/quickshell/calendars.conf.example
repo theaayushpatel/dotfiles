@@ -1,0 +1,22 @@
+# ==============================================================================
+# Multi-Calendar Configuration for Quickshell ClockPanel
+# Copy this file to: ~/.config/quickshell/calendars.conf
+# Note: ~/.config/quickshell/calendars.conf is ignored by git to keep your URLs private.
+# ==============================================================================
+#
+# Format:
+# Calendar Name | Hex Color | Secret iCal URL
+#
+# How to get your Google Calendar secret iCal URL:
+# 1. Open https://calendar.google.com
+# 2. Go to Settings -> "Settings for my calendars" -> click a calendar
+# 3. Scroll down to "Integrate calendar" section
+# 4. Copy "Secret address in iCal format" (starts with https://calendar.google.com/calendar/ical/...)
+#
+# Examples:
+Personal      | #47c8ff | https://calendar.google.com/calendar/ical/your_email%40gmail.com/private-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx/basic.ics
+Classes       | #a78bfa | https://calendar.google.com/calendar/ical/example_class%40group.calendar.google.com/private-xxxxxxxxxxxxxxxx/basic.ics
+Holidays      | #34d399 | https://calendar.google.com/calendar/ical/en.indian%23holiday%40group.v.calendar.google.com/public/basic.ics
+Events        | #f472b6 | https://calendar.google.com/calendar/ical/example_events%40group.calendar.google.com/private-xxxxxxxxxxxxxxxx/basic.ics
+Anniversaries | #fbbf24 | https://calendar.google.com/calendar/ical/example_anniv%40group.calendar.google.com/private-xxxxxxxxxxxxxxxx/basic.ics
+

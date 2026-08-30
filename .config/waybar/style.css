@@ -1,4 +1,4 @@
-@define-color bg @background;
+@define-color bg #000000;
 @define-color fg @foreground;
 @define-color blue #47c8ff;
 

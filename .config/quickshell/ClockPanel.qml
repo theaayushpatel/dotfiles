@@ -270,22 +270,158 @@ PanelWindow {
     return 1 + Math.ceil((firstThursday - target) / 604800000)
   }
 
+  function getTzOffsetMinutes(zone, d) {
+    var targetDate = d || root.now
+    var year = targetDate.getUTCFullYear()
+
+    var isUsDst = function() {
+      var march = new Date(Date.UTC(year, 2, 1))
+      var marchFirstSun = 1 + ((7 - march.getUTCDay()) % 7)
+      var marchSecondSun = marchFirstSun + 7
+      var dstStart = new Date(Date.UTC(year, 2, marchSecondSun, 7, 0, 0))
+
+      var nov = new Date(Date.UTC(year, 10, 1))
+      var novFirstSun = 1 + ((7 - nov.getUTCDay()) % 7)
+      var dstEnd = new Date(Date.UTC(year, 10, novFirstSun, 6, 0, 0))
+
+      return targetDate >= dstStart && targetDate < dstEnd
+    }
+
+    var isEuDst = function() {
+      var march31 = new Date(Date.UTC(year, 2, 31))
+      var marchLastSun = 31 - march31.getUTCDay()
+      var dstStart = new Date(Date.UTC(year, 2, marchLastSun, 1, 0, 0))
+
+      var oct31 = new Date(Date.UTC(year, 9, 31))
+      var octLastSun = 31 - oct31.getUTCDay()
+      var dstEnd = new Date(Date.UTC(year, 9, octLastSun, 1, 0, 0))
+
+      return targetDate >= dstStart && targetDate < dstEnd
+    }
+
+    var isAusDst = function() {
+      var oct = new Date(Date.UTC(year, 9, 1))
+      var octFirstSun = 1 + ((7 - oct.getUTCDay()) % 7)
+      var dstStart = new Date(Date.UTC(year, 9, octFirstSun, 16, 0, 0))
+
+      var apr = new Date(Date.UTC(year, 3, 1))
+      var aprFirstSun = 1 + ((7 - apr.getUTCDay()) % 7)
+      var dstEnd = new Date(Date.UTC(year, 3, aprFirstSun, 16, 0, 0))
+
+      return targetDate >= dstStart || targetDate < dstEnd
+    }
+
+    switch (zone) {
+      case "UTC":
+      case "Etc/UTC":
+      case "GMT":
+        return 0
+      case "Asia/Kolkata":
+      case "IST":
+        return 330
+      case "America/New_York":
+      case "EST":
+      case "EDT":
+        return isUsDst() ? -240 : -300
+      case "America/Los_Angeles":
+      case "PST":
+      case "PDT":
+        return isUsDst() ? -420 : -480
+      case "America/Chicago":
+      case "CST":
+      case "CDT":
+        return isUsDst() ? -300 : -360
+      case "America/Denver":
+      case "MST":
+      case "MDT":
+        return isUsDst() ? -360 : -420
+      case "Europe/London":
+      case "BST":
+        return isEuDst() ? 60 : 0
+      case "Europe/Paris":
+      case "Europe/Berlin":
+      case "Europe/Rome":
+      case "Europe/Madrid":
+      case "CET":
+      case "CEST":
+        return isEuDst() ? 120 : 60
+      case "Asia/Tokyo":
+      case "JST":
+        return 540
+      case "Asia/Shanghai":
+      case "Asia/Hong_Kong":
+      case "Asia/Singapore":
+      case "SGT":
+      case "CST_ASIA":
+        return 480
+      case "Asia/Dubai":
+      case "GST":
+        return 240
+      case "Australia/Sydney":
+      case "AEST":
+      case "AEDT":
+        return isAusDst() ? 660 : 600
+      case "Pacific/Auckland":
+      case "NZST":
+      case "NZDT":
+        return isAusDst() ? 780 : 720
+      default:
+        if (typeof zone === "number") return zone
+        return 0
+    }
+  }
+
+  function getWorldDateObj(tz) {
+    var d = root.now
+    var offsetMin = root.getTzOffsetMinutes(tz, d)
+    return new Date(d.getTime() + offsetMin * 60000)
+  }
+
+  function getWorldDate(tz) {
+    try {
+      var target = getWorldDateObj(tz)
+      var shortMonths = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+      var shortDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+      var dayName = shortDays[target.getUTCDay()]
+      var monthName = shortMonths[target.getUTCMonth()]
+      var dateNum = target.getUTCDate()
+      return dayName + ", " + monthName + " " + dateNum
+    } catch (e) {
+      return "--"
+    }
+  }
+
   function getWorldTime(tz) {
     try {
-      var d = new Date()
-      return d.toLocaleTimeString("en-US", { timeZone: tz, hour: "2-digit", minute: "2-digit", hour12: false })
+      var target = getWorldDateObj(tz)
+      var h = pad(target.getUTCHours())
+      var m = pad(target.getUTCMinutes())
+      return h + ":" + m
     } catch (e) {
       return "--:--"
     }
   }
 
+  function getWorldOffset(tz) {
+    try {
+      var offsetMin = root.getTzOffsetMinutes(tz, root.now)
+      var sign = offsetMin >= 0 ? "+" : "-"
+      var absMin = Math.abs(offsetMin)
+      var h = Math.floor(absMin / 60)
+      var m = absMin % 60
+      return sign + h + ":" + (m < 10 ? "0" + m : m)
+    } catch (e) {
+      return "+0:00"
+    }
+  }
+
   readonly property var worldTimezones: [
-    { name: "UTC", zone: "UTC", icon: "󰡛", city: "Universal Time" },
-    { name: "IST", zone: "Asia/Kolkata", icon: "󰀵", city: "New Delhi / Mumbai" },
-    { name: "EST", zone: "America/New_York", icon: "󰀵", city: "New York" },
-    { name: "GMT", zone: "Europe/London", icon: "󰀵", city: "London" },
-    { name: "JST", zone: "Asia/Tokyo", icon: "󰀵", city: "Tokyo" },
-    { name: "PST", zone: "America/Los_Angeles", icon: "󰀵", city: "San Francisco" }
+    { name: "UTC", zone: "UTC", city: "Universal Time" },
+    { name: "IST", zone: "Asia/Kolkata", city: "Kolkata" },
+    { name: "CET", zone: "Europe/Berlin", city: "Berlin" },
+    { name: "EST", zone: "America/New_York", city: "New York" },
+    { name: "GMT", zone: "Europe/London", city: "London" },
+    { name: "JST", zone: "Asia/Tokyo", city: "Tokyo" }
   ]
 
   IpcHandler {
@@ -1107,16 +1243,10 @@ PanelWindow {
                 anchors.rightMargin: 14
                 spacing: 12
 
-                Text {
-                  text: modelData.icon
-                  color: Theme.accent
-                  font.family: Theme.font
-                  font.pixelSize: 18
-                }
-
                 Column {
                   Layout.fillWidth: true
                   spacing: 2
+                  Layout.alignment: Qt.AlignVCenter
 
                   Text {
                     text: modelData.name + " • " + modelData.city
@@ -1127,11 +1257,19 @@ PanelWindow {
                   }
 
                   Text {
-                    text: modelData.zone
+                    text: root.getWorldOffset(modelData.zone)
                     color: Theme.fgMuted
                     font.family: Theme.font
                     font.pixelSize: 10
                   }
+                }
+
+                Text {
+                  text: root.getWorldDate(modelData.zone)
+                  color: Theme.fgMuted
+                  font.family: Theme.font
+                  font.pixelSize: 10
+                  Layout.alignment: Qt.AlignVCenter
                 }
 
                 Text {
@@ -1140,6 +1278,7 @@ PanelWindow {
                   font.family: Theme.font
                   font.pixelSize: 18
                   font.bold: true
+                  Layout.alignment: Qt.AlignVCenter
                 }
               }
             }

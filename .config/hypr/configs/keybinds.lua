@@ -33,7 +33,7 @@ hl.bind(mainMod .. " + SHIFT + F", function()
 end)
 
 hl.bind(mainMod .. " + TAB", hl.dsp.exec_cmd(p.windowswitcher))
-
+hl.bind(mainMod .. " + space", hl.dsp.exec_cmd(p.runner))
 hl.bind("ALT + space", hl.dsp.exec_cmd(p.menu))
 -- hl.bind(mainMod .. " + space", hl.dsp.exec_cmd("zsh -lc '~/.config/rofi/scripts/palette.sh'"))
 hl.bind(mainMod .. " + P", hl.dsp.window.pseudo())

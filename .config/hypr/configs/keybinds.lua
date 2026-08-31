@@ -38,8 +38,10 @@ hl.bind("Print", hl.dsp.exec_cmd("flameshot gui"))
 hl.bind(mainMod .. " + V", hl.dsp.exec_cmd("cliphist list | rofi -dmenu | cliphist decode | wl-copy"))
 
 -- hl.bind(mainMod .. " + F4", hl.dsp.exec_cmd("zsh -lc '~/.config/hypr/scripts/power.sh'"))
-hl.bind(mainMod .. "+ CTRL + A", hl.dsp.exec_cmd("swaync-client -t"))
+hl.bind(mainMod .. "+ SHIFT + A", hl.dsp.exec_cmd("swaync-client -t"))
 hl.bind(mainMod .. " + O", hl.dsp.exec_cmd("zsh -lc '~/.config/hypr/scripts/finder.sh'"))
+hl.bind(mainMod .. " + SHIFT + W", hl.dsp.exec_cmd("zsh -lc '~/.config/hypr/scripts/wallpaper.sh'"))
+hl.bind(mainMod .. " + CTRL + SHIFT + W", hl.dsp.exec_cmd("zsh -lc '~/.config/hypr/scripts/wallpaper.sh --random all'"))
 -- Move focus with mainMod + arrow keys
 hl.bind(mainMod .. " + left",  hl.dsp.focus({ direction = "left" }))
 hl.bind(mainMod .. " + right", hl.dsp.focus({ direction = "right" }))

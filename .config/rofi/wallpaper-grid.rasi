@@ -1,0 +1,75 @@
+/**
+ * ROFI Wallpaper Grid Theme
+ * Displays visual thumbnail grid for wallpaper picker
+ **/
+
+@import "~/.config/rofi/theme.rasi"
+
+window {
+    width:            860px;
+    border-radius:    10px;
+    padding:          0px;
+}
+
+mainbox {
+    spacing:          14px;
+    padding:          16px;
+    children:         [ "inputbar", "message", "listview" ];
+}
+
+inputbar {
+    children:         [ "prompt", "entry", "num-filtered-rows" ];
+}
+
+prompt {
+    font:             "JetBrainsMono Nerd Font Bold 10";
+}
+
+listview {
+    columns:          4;
+    lines:            3;
+    cycle:            true;
+    dynamic:          true;
+    scrollbar:        false;
+    layout:           vertical;
+    flow:             horizontal;
+    spacing:          10px;
+    fixed-height:     false;
+    fixed-columns:    true;
+    padding:          4px 0px 0px 0px;
+}
+
+element {
+    orientation:      vertical;
+    padding:          10px 8px;
+    spacing:          8px;
+    border-radius:    8px;
+    border:           1px solid;
+    border-color:     @border-col;
+    background-color: @bg-alt;
+    cursor:           pointer;
+}
+
+element-icon {
+    size:             130px;
+    horizontal-align: 0.5;
+    vertical-align:   0.5;
+    border-radius:    6px;
+    cursor:           inherit;
+}
+
+element-text {
+    horizontal-align: 0.5;
+    vertical-align:   0.5;
+    text-color:       inherit;
+    cursor:           inherit;
+    font:             "JetBrainsMono Nerd Font 9.5";
+    highlight:        bold #47c8ff;
+}
+
+element selected.normal {
+    background-color: @bg-hover;
+    border-color:     @accent;
+    text-color:       @accent-hover;
+}
+

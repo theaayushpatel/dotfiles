@@ -22,14 +22,9 @@ hl.bind(mainMod .. " + SHIFT + F", function()
     return
   end
 
-  local count = -1
-  if w.workspace ~= nil then
-    count = #w.workspace:get_windows()
-  end
-
   hl.dispatch(hl.dsp.window.float({ action = "toggle" }))
 
-  if w.floating and count == 1 then
+  if w.floating then
     hl.dispatch(hl.dsp.window.resize({ x = 1000, y = 700 }))
     hl.dispatch(hl.dsp.window.center({ window = w.address }))
   end

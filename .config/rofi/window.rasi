@@ -1,0 +1,111 @@
+/**
+ * ROFI Window Switcher Theme
+ * Windows-like Alt+Tab / Task Switcher Card Grid
+ **/
+
+@import "~/.config/rofi/theme.rasi"
+
+window {
+    width:            880px;
+    border:           1px solid;
+    border-color:     @border-col;
+    border-radius:    10px;
+    background-color: @bg;
+    padding:          0px;
+}
+
+mainbox {
+    spacing:          14px;
+    padding:          16px;
+    children:         [ "inputbar", "message", "listview" ];
+}
+
+inputbar {
+    spacing:          10px;
+    padding:          10px 14px;
+    background-color: @bg-alt;
+    border:           1px solid;
+    border-color:     @border-col;
+    border-radius:    6px;
+    text-color:       @fg;
+    children:         [ "prompt", "entry", "num-filtered-rows" ];
+}
+
+prompt {
+    background-color: transparent;
+    text-color:       @accent;
+    font:             "JetBrainsMono Nerd Font Bold 10";
+    vertical-align:   0.5;
+}
+
+entry {
+    background-color: transparent;
+    text-color:       @fg;
+    placeholder:      "Switch window...";
+    placeholder-color:@fg-muted;
+    cursor-color:     @accent;
+    vertical-align:   0.5;
+}
+
+listview {
+    columns:          4;
+    lines:            2;
+    cycle:            true;
+    dynamic:          true;
+    scrollbar:        false;
+    layout:           vertical;
+    flow:             horizontal;
+    spacing:          10px;
+    fixed-height:     false;
+    fixed-columns:    true;
+    padding:          4px 0px 0px 0px;
+}
+
+element {
+    orientation:      vertical;
+    padding:          14px 10px;
+    spacing:          10px;
+    border-radius:    8px;
+    border:           1px solid;
+    border-color:     @border-col;
+    background-color: @bg-alt;
+    text-color:       @fg-muted;
+    cursor:           pointer;
+}
+
+element-icon {
+    size:             80px;
+    horizontal-align: 0.5;
+    vertical-align:   0.5;
+    border-radius:    6px;
+    cursor:           inherit;
+}
+
+element-text {
+    horizontal-align: 0.5;
+    vertical-align:   0.5;
+    text-color:       inherit;
+    cursor:           inherit;
+    font:             "JetBrainsMono Nerd Font 9.5";
+    highlight:        bold #47c8ff;
+}
+
+element selected.normal {
+    background-color: @bg-hover;
+    border-color:     @border-active;
+    text-color:       @fg;
+}
+
+element normal.active,
+element alternate.active {
+    background-color: @bg-active;
+    border-color:     @accent;
+    text-color:       @accent;
+}
+
+element selected.active {
+    background-color: @bg-active;
+    border-color:     @accent-hover;
+    text-color:       @fg;
+}
+

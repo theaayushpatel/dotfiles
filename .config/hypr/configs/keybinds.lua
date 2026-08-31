@@ -10,7 +10,9 @@ local mainMod = "SUPER" -- Sets "Windows" key as main modifier
 
 -- Example binds, see https://wiki.hypr.land/Configuring/Basics/Binds/ for more
 hl.bind(mainMod .. " + RETURN", hl.dsp.exec_cmd(p.terminal))
+
 local closeWindowBind = hl.bind(mainMod .. " + Q", hl.dsp.window.close())
+
 -- closeWindowBind:set_enabled(false)
 hl.bind(mainMod .. " + M", hl.dsp.exec_cmd("command -v hyprshutdown >/dev/null 2>&1 && hyprshutdown || hyprctl dispatch 'hl.dsp.exit()'"))
 hl.bind(mainMod .. " + L", hl.dsp.exec_cmd("hyprlock"))
@@ -29,6 +31,9 @@ hl.bind(mainMod .. " + SHIFT + F", function()
     hl.dispatch(hl.dsp.window.center({ window = w.address }))
   end
 end)
+
+hl.bind(mainMod .. " + TAB", hl.dsp.exec_cmd(p.windowswitcher))
+
 hl.bind("ALT + space", hl.dsp.exec_cmd(p.menu))
 -- hl.bind(mainMod .. " + space", hl.dsp.exec_cmd("zsh -lc '~/.config/rofi/scripts/palette.sh'"))
 hl.bind(mainMod .. " + P", hl.dsp.window.pseudo())

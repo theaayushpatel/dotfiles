@@ -49,7 +49,7 @@ window {
 mainbox {
     spacing:          12px;
     padding:          16px;
-    children:         [ "inputbar", "message", "listview", "mode-switcher" ];
+    children:         [ "inputbar", "message", "listview" ];
 }
 
 /* --- Input Bar --- */

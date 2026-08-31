@@ -1,9 +1,13 @@
 configuration {
-	modes: "drun,window";
+	modes: "drun,window,run";
 	show-icons: true;
 	display-drun: "  Apps";
 	display-window: "  Windows";
+	display-run: "  Run";
 	drun-display-format: "{name}";
+	window-format: "{c}  ·  {t}";
+	window-match-fields: "all";
+	window-thumbnail: true;
 /*	font: "mono 12";*/
 /*	location: 0;*/
 /*	yoffset: 0;*/

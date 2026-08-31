@@ -8,5 +8,6 @@ return {
     fileManager = "dolphin",
     menu        = "rofi -show drun -show-icons",
     runner      = "rofi -show run",
+    windowswitcher = "rofi -show window -show-icons -theme ~/.config/rofi/window.rasi",
     browser     = "brave"
 }

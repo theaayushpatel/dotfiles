@@ -16,6 +16,24 @@ hl.bind(mainMod .. " + M", hl.dsp.exec_cmd("command -v hyprshutdown >/dev/null 2
 hl.bind(mainMod .. " + L", hl.dsp.exec_cmd("hyprlock"))
 hl.bind(mainMod .. " + E", hl.dsp.exec_cmd(p.fileManager))
 hl.bind(mainMod .. " + F", hl.dsp.window.float({ action = "toggle" }))
+hl.bind(mainMod .. " + SHIFT + F", function()
+  local w = hl.get_active_window()
+  if w == nil then
+    return
+  end
+
+  local count = -1
+  if w.workspace ~= nil then
+    count = #w.workspace:get_windows()
+  end
+
+  hl.dispatch(hl.dsp.window.float({ action = "toggle" }))
+
+  if w.floating and count == 1 then
+    hl.dispatch(hl.dsp.window.resize({ x = 1000, y = 700 }))
+    hl.dispatch(hl.dsp.window.center({ window = w.address }))
+  end
+end)
 hl.bind("ALT + space", hl.dsp.exec_cmd(p.menu))
 -- hl.bind(mainMod .. " + space", hl.dsp.exec_cmd("zsh -lc '~/.config/rofi/scripts/palette.sh'"))
 hl.bind(mainMod .. " + P", hl.dsp.window.pseudo())

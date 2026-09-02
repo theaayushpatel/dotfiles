@@ -655,7 +655,7 @@ PanelWindow {
                 spacing: 6
 
                 Text {
-                  text: "󰡛"
+                  text: ""
                   color: root.activeTab === 1 ? Theme.accent : Theme.fgMuted
                   font.family: Theme.font
                   font.pixelSize: 12

@@ -10,6 +10,8 @@
   "margin-right": 0,
   "margin-bottom": 0,
   "modules-left": [
+    "custom/arch",
+    "custom/separator",
     "clock",
     "custom/separator",
     "hyprland/workspaces"
@@ -67,14 +69,15 @@
     "format": "|", 
     "tooltip": false
 },
-"custom/separator2": {
-"exec": "sh -c 'count=$(busctl --user get-property org.kde.StatusNotifierWatcher /StatusNotifierWatcher org.kde.StatusNotifierWatcher RegisteredStatusNotifierItems | sed -n \"s/^as \\([0-9]\\+\\).*/\\1/p\"); if [ \"${count:-0}\" -gt 0 ]; then echo \"{\\\"text\\\":\\\"|\\\",\\\"class\\\":\\\"show\\\"}\"; else echo \" {\\\"text\\\":\\\"\\\",\\\"class\\\":\\\"hide\\\"}\"; fi'",
-    "return-type": "json",
-    "interval": 2
-},
-"custom/separator3": {
-    "format": "•", 
-    "tooltip": false
+// "custom/separator2": {
+//     "format": "•", 
+//     "tooltip": false
+// },
+"custom/arch": {
+    "format": "  ",
+    "tooltip": true,
+    "tooltip-format": "Open App Launcher",
+    "on-click": "rofi -show drun -show-icons" 
 },
 
   // "custom/power": {

@@ -39,7 +39,7 @@ hl.bind("ALT + space", hl.dsp.exec_cmd(p.menu))
 hl.bind(mainMod .. " + P", hl.dsp.window.pseudo())
 hl.bind(mainMod .. " + J", hl.dsp.layout("togglesplit"))    -- dwindle only
 hl.bind("Print", hl.dsp.exec_cmd("flameshot gui"))
-
+hl.bind(mainMod .. " + CTRL + T", hl.dsp.exec_cmd("rune-desktop"))
 hl.bind(mainMod .. " + V", hl.dsp.exec_cmd("cliphist list | rofi -dmenu | cliphist decode | wl-copy"))
 
 -- hl.bind(mainMod .. " + F4", hl.dsp.exec_cmd("zsh -lc '~/.config/hypr/scripts/power.sh'"))

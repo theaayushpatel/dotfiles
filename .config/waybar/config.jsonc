@@ -15,13 +15,13 @@
     "clock",
     "custom/separator",
     "hyprland/workspaces"
+    // "custom/separator",
     // "cpu",
     // "memory",
-    // "custom/gpu-usage",
-    // "custom/separator"
+    // "custom/gpu-usage"
   ],
   "modules-center": [
- "mpris"
+    "mpris"
   ],
   "modules-right": [
     
@@ -97,25 +97,7 @@
       "power-saver": ""
     }
   },
-"cpu": {
-    "interval": 5,
-    "format": "<span color='#47c8ff'>cpu</span> {usage:02}%",
-    "on-click": "zsh -lc 'ghostty -e btop'",
-    "states": {
-        "warning": 50,
-        "critical": 80
-    }
-},
-"memory": {
-    "interval": 5,
-    "format": "<span color='#47c8ff'>mem</span> {percentage:02}%",
-    "tooltip-format": "Used {percentage}%\n{used:0.1f}GB/{total:0.1f}GB",
-    "on-click": "zsh -lc 'ghostty -e btop'",
-    "states": {
-        "warning": 50,
-        "critical": 80
-    }
-},
+
   "custom/notification": {
     "tooltip": false,
     "format": "{icon}",
@@ -136,8 +118,27 @@
     "on-click-right": "swaync-client -d -sw",
     "escape": true
   },
+"cpu": {
+    "interval": 5,
+    "format": "<span color='#47c8ff'>C</span> {usage:02}%",
+    "on-click": "zsh -lc 'ghostty -e btop'",
+    "states": {
+        "warning": 50,
+        "critical": 80
+    }
+},
+"memory": {
+    "interval": 5,
+    "format": "<span color='#47c8ff'>M</span> {percentage:02}%",
+    "tooltip-format": "Used {percentage}%\n{used:0.1f}GB/{total:0.1f}GB",
+    "on-click": "zsh -lc 'ghostty -e btop'",
+    "states": {
+        "warning": 50,
+        "critical": 80
+    }
+},
  "custom/gpu-usage": {
-    "exec": "gpu-usage-waybar --text-format '<span color=\"#47c8ff\">gpu</span> {gpu_utilization}% <span color=\"#47c8ff\">vram</span> {mem_utilization}%'",
+    "exec": "gpu-usage-waybar --text-format '<span color=\"#47c8ff\">G</span> {gpu_utilization}% <span color=\"#47c8ff\">V</span> {mem_utilization}%'",
     "return-type": "json",
     "format": "{}",
     "on-click": "zsh -lc 'ghostty -e nvtop'"
@@ -229,7 +230,9 @@
     "dynamic-importance-order": ["position", "length", "title"],
     "tooltip-format": "{player} ({status}):\n{artist} - {title}",  
     "ignored-players": ["firefox", "brave"],
-    "on-click": "quickshell ipc -p ~/.config/quickshell call shell toggleMedia"
+    "on-click": "quickshell ipc -p ~/.config/quickshell call shell toggleMedia",
+    "on-click-right": "playerctl play-pause"
+
   },
 
   "group/tray-drawer": {

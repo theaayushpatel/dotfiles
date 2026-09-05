@@ -39,6 +39,11 @@ PanelWindow {
   property bool qrOpen: false
   property real downloadRate: 0
   property real uploadRate: 0
+  property real totalRx: 0
+  property real totalTx: 0
+  property real baselineRx: 0
+  property real baselineTx: 0
+  property string currentConPath: ""
   property real previousRx: 0
   property real previousTx: 0
   property double previousSampleTime: 0
@@ -59,10 +64,21 @@ PanelWindow {
   WlrLayershell.namespace: "dotfiles-network-panel"
   WlrLayershell.layer: WlrLayer.Top
   WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand
+  property real targetCenterX: -1
+
   anchors.top: true
-  anchors.right: true
-  margins.top: 40
-  margins.right: 12
+  anchors.left: true
+  anchors.right: false
+  margins.top: 44
+  margins.left: {
+    var screenW = (root.screen ? root.screen.width : 1920)
+    var panelW = root.implicitWidth || 420
+    var cx = targetCenterX >= 0 ? targetCenterX : (screenW / 2)
+    var left = cx - (panelW / 2)
+    var minLeft = 12
+    var maxLeft = screenW - panelW - 12
+    return Math.round(Math.max(minLeft, Math.min(maxLeft, left)))
+  }
 
   HyprlandFocusGrab {
     windows: [ root ]
@@ -159,14 +175,11 @@ PanelWindow {
   }
 
   function refresh(scan) {
-    detailsProc.running = false
-    detailsProc.running = true
-    wifiProc.command = ["bash", "-lc", scan ? "nmcli -t --escape yes -f ACTIVE,SSID,SIGNAL,SECURITY dev wifi list --rescan yes" : "nmcli -t --escape yes -f ACTIVE,SSID,SIGNAL,SECURITY dev wifi list"]
-    wifiProc.running = false
-    wifiProc.running = true
-    knownProc.running = false
-    knownProc.running = true
-    scanning = scan
+    if (!detailsProc.running) detailsProc.running = true
+    if (!knownProc.running) knownProc.running = true
+    wifiProc.command = ["bash", "-lc", scan ? "nmcli -t --escape yes -f ACTIVE,SSID,SIGNAL,SECURITY dev wifi list --rescan yes" : "nmcli -t --escape yes -f ACTIVE,SSID,SIGNAL,SECURITY dev wifi list --rescan no"]
+    if (!wifiProc.running) wifiProc.running = true
+    scanning = !!scan
   }
 
   function closePanel() {
@@ -373,6 +386,11 @@ PanelWindow {
           Text { text: "Up"; color: Theme.fgMuted; font.family: Theme.font; font.pixelSize: 11 }
           Text { text: root.formatBytes(root.uploadRate) + "/s"; color: Theme.accent; font.family: Theme.font; font.pixelSize: 11; font.bold: true; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
 
+          Text { text: "Total Down"; color: Theme.fgMuted; font.family: Theme.font; font.pixelSize: 11 }
+          Text { text: root.formatBytes(root.totalRx); color: Theme.fg; font.family: Theme.font; font.pixelSize: 11; font.bold: true; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
+          Text { text: "Total Up"; color: Theme.fgMuted; font.family: Theme.font; font.pixelSize: 11 }
+          Text { text: root.formatBytes(root.totalTx); color: Theme.fg; font.family: Theme.font; font.pixelSize: 11; font.bold: true; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
+
           Text { text: "IP"; color: Theme.fgMuted; font.family: Theme.font; font.pixelSize: 11 }
           Text { text: root.details.ip || "--"; color: Theme.fg; font.family: Theme.font; font.pixelSize: 11; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
           Text { text: "Gateway"; color: Theme.fgMuted; font.family: Theme.font; font.pixelSize: 11 }
@@ -450,6 +468,7 @@ PanelWindow {
             width: content.width
             readonly property bool isKnown: root.knownNetworks.indexOf(modelData.ssid) >= 0
             readonly property bool isFirstOther: !isKnown && (index === 0 || root.knownNetworks.indexOf(root.orderedNetworks[index - 1].ssid) >= 0)
+            readonly property bool isCurrentConnected: (root.details.ssid && modelData.ssid === root.details.ssid) || modelData.active
             height: 50 + (isFirstOther ? 26 : 0)
             color: "transparent"
 
@@ -470,8 +489,8 @@ PanelWindow {
                 width: parent.width
                 height: 46
                 radius: Theme.cardRadius
-                color: modelData.active ? Theme.surfaceActive : netItemMouse.containsMouse ? Theme.surfaceHover : Theme.surface
-                border.color: modelData.active ? Theme.accent : Theme.border
+                color: isCurrentConnected ? Theme.surfaceActive : netItemMouse.containsMouse ? Theme.surfaceHover : Theme.surface
+                border.color: isCurrentConnected ? Theme.accent : Theme.border
                 border.width: 1
 
                 RowLayout {
@@ -482,7 +501,7 @@ PanelWindow {
 
                   Text {
                     text: root.wifiIcon(modelData.signal)
-                    color: modelData.active ? Theme.accent : Theme.fgMuted
+                    color: isCurrentConnected ? Theme.accent : Theme.fgMuted
                     font.family: Theme.font
                     font.pixelSize: 18
                   }
@@ -493,9 +512,9 @@ PanelWindow {
 
                     Text {
                       text: modelData.ssid
-                      color: modelData.active ? Theme.fg : Theme.fg
+                      color: Theme.fg
                       font.pixelSize: 12
-                      font.bold: modelData.active
+                      font.bold: isCurrentConnected
                       font.family: Theme.font
                       Layout.fillWidth: true
                       elide: Text.ElideRight
@@ -504,13 +523,13 @@ PanelWindow {
                     RowLayout {
                       spacing: 6
                       Text {
-                        text: modelData.active ? "Connected" : (modelData.security && modelData.security !== "--" ? modelData.security : "Open")
-                        color: modelData.active ? Theme.accent : Theme.fgMuted
+                        text: isCurrentConnected ? "Connected" : (modelData.security && modelData.security !== "--" ? modelData.security : "Open")
+                        color: isCurrentConnected ? Theme.accent : Theme.fgMuted
                         font.family: Theme.font
                         font.pixelSize: 10
                       }
                       Text {
-                        visible: modelData.active
+                        visible: isCurrentConnected
                         text: "󰄬"
                         color: Theme.accent
                         font.family: Theme.font
@@ -528,7 +547,7 @@ PanelWindow {
 
                   // Forget button for known networks
                   Rectangle {
-                    visible: isKnown && !modelData.active
+                    visible: isKnown && !isCurrentConnected
                     width: 22
                     height: 22
                     radius: 11
@@ -792,7 +811,7 @@ PanelWindow {
 
   Process {
     id: detailsProc
-    command: ["bash", "-lc", "iface=$(nmcli -t -f DEVICE,TYPE,STATE device status | awk -F: '$3 == \"connected\" { print $1; exit }'); ssid=$(nmcli -t -f ACTIVE,SSID dev wifi | awk -F: '$1 == \"yes\" { print substr($0, 5); exit }'); ip=$(ip -4 -o addr show \"$iface\" 2>/dev/null | awk '{print $4}' | cut -d/ -f1); gateway=$(ip route show default 2>/dev/null | awk '{print $3; exit}'); type=$(nmcli -t -f DEVICE,TYPE device status | awk -F: -v i=\"$iface\" '$1 == i { print $2; exit }'); connection=$(nmcli -g GENERAL.CONNECTION device show \"$iface\" 2>/dev/null); security=$(nmcli -t -f ACTIVE,SECURITY dev wifi | awk -F: '$1 == \"yes\" { print substr($0, 5); exit }'); rx=$(cat \"/sys/class/net/$iface/statistics/rx_bytes\" 2>/dev/null); tx=$(cat \"/sys/class/net/$iface/statistics/tx_bytes\" 2>/dev/null); ping=$(ping -c 1 -W 1 \"$gateway\" 2>/dev/null | awk -F'[/ ]+' '/rtt|round-trip/ { print $7 \" ms\"; exit }'); loss=$(ping -c 1 -W 1 1.1.1.1 2>/dev/null | awk -F', ' '/packet loss/ { print $3; exit }'); printf 'iface\\t%s\\nip\\t%s\\ngateway\\t%s\\ntype\\t%s\\nssid\\t%s\\nconnection\\t%s\\nsecurity\\t%s\\nrx\\t%s\\ntx\\t%s\\nping\\t%s\\nloss\\t%s\\nwifiEnabled\\t%s\\n' \"$iface\" \"$ip\" \"$gateway\" \"$type\" \"$ssid\" \"$connection\" \"$security\" \"$rx\" \"$tx\" \"$ping\" \"$loss\" \"$(nmcli radio wifi 2>/dev/null)\""]
+    command: ["/home/aayush/.config/quickshell/scripts/network_details.sh"]
     stdout: StdioCollector {
       waitForEnd: true
       onStreamFinished: function() {
@@ -802,8 +821,29 @@ PanelWindow {
           root.downloadRate = root.rate(root.previousRx, next.rx, root.previousSampleTime, now)
           root.uploadRate = root.rate(root.previousTx, next.tx, root.previousSampleTime, now)
         }
-        root.previousRx = Number(next.rx || 0)
-        root.previousTx = Number(next.tx || 0)
+        var rxNow = Number(next.rx || 0)
+        var txNow = Number(next.tx || 0)
+        var activeCon = next.conPath || next.connection || next.ssid || ""
+
+        if (root.currentConPath !== activeCon) {
+          if (root.currentConPath === "") {
+            root.baselineRx = 0
+            root.baselineTx = 0
+          } else {
+            root.baselineRx = rxNow
+            root.baselineTx = txNow
+          }
+          root.currentConPath = activeCon
+        }
+
+        if (rxNow < root.baselineRx) root.baselineRx = 0
+        if (txNow < root.baselineTx) root.baselineTx = 0
+
+        root.totalRx = Math.max(0, rxNow - root.baselineRx)
+        root.totalTx = Math.max(0, txNow - root.baselineTx)
+
+        root.previousRx = rxNow
+        root.previousTx = txNow
         root.previousSampleTime = now
         root.details = next
       }
@@ -819,6 +859,9 @@ PanelWindow {
         root.scanning = false
       }
     }
+    onExited: function(exitCode) {
+      root.scanning = false
+    }
   }
 
   Process {
@@ -833,7 +876,7 @@ PanelWindow {
   }
 
   Timer {
-    interval: 1500
+    interval: 1000
     running: root.opened
     repeat: true
     onTriggered: {
@@ -843,12 +886,12 @@ PanelWindow {
   }
 
   Timer {
-    interval: 6000
+    interval: 10000
     running: root.opened
     repeat: true
     onTriggered: {
       if (!wifiProc.running) {
-        wifiProc.command = ["bash", "-lc", "nmcli -t --escape yes -f ACTIVE,SSID,SIGNAL,SECURITY dev wifi list"]
+        wifiProc.command = ["bash", "-lc", "nmcli -t --escape yes -f ACTIVE,SSID,SIGNAL,SECURITY dev wifi list --rescan no"]
         wifiProc.running = true
       }
     }
@@ -861,6 +904,7 @@ PanelWindow {
     onExited: function() {
       root.busy = false
       root.notice = ""
+      if (!detailsProc.running) detailsProc.running = true
       root.refresh(false)
     }
   }

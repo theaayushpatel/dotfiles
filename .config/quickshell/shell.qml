@@ -13,90 +13,87 @@ ShellRoot {
     AudioPanel { id: audioPanel }
     MediaPanel { id: mediaPanel }
 
+    function getScreenByName(name) {
+        if (!name) return null
+        for (var i = 0; i < Quickshell.screens.length; i++) {
+            if (Quickshell.screens[i].name === name) {
+                return Quickshell.screens[i]
+            }
+        }
+        return null
+    }
+
+    function togglePanelInternal(panelName, targetX, screenName) {
+        var xVal = (targetX !== undefined && targetX !== null && targetX !== "") ? Number(targetX) : -1
+        var scr = getScreenByName(screenName)
+
+        var panelMap = {
+            "network": networkPanel,
+            "bluetooth": bluetoothPanel,
+            "power": powerPanel,
+            "clock": clockPanel,
+            "brightness": brightnessPanel,
+            "audio": audioPanel,
+            "media": mediaPanel
+        }
+
+        var target = panelMap[panelName]
+        if (!target) return
+
+        var willOpen = !target.opened
+
+        // Close all other panels
+        for (var key in panelMap) {
+            if (panelMap[key] !== target) {
+                panelMap[key].closePanel()
+            }
+        }
+
+        if (willOpen) {
+            if (xVal >= 0) target.targetCenterX = xVal
+            if (scr) target.screen = scr
+            target.opened = true
+            if (typeof target.refresh === "function") {
+                target.refresh(panelName === "network")
+            }
+        } else {
+            target.closePanel()
+        }
+    }
+
     IpcHandler {
         target: "shell"
 
+        function togglePanel(panelName: string, targetX: real, screenName: string) {
+            togglePanelInternal(panelName, targetX, screenName)
+        }
+
         function toggleNetwork() {
-            var willOpen = !networkPanel.opened
-            bluetoothPanel.closePanel()
-            powerPanel.closePanel()
-            clockPanel.closePanel()
-            brightnessPanel.closePanel()
-            audioPanel.closePanel()
-            mediaPanel.closePanel()
-            networkPanel.opened = willOpen
-            if (networkPanel.opened) networkPanel.refresh(true)
+            togglePanelInternal("network", -1, "")
         }
 
         function toggleBluetooth() {
-            var willOpen = !bluetoothPanel.opened
-            networkPanel.closePanel()
-            powerPanel.closePanel()
-            clockPanel.closePanel()
-            brightnessPanel.closePanel()
-            audioPanel.closePanel()
-            mediaPanel.closePanel()
-            bluetoothPanel.opened = willOpen
-            if (bluetoothPanel.opened) bluetoothPanel.refresh()
+            togglePanelInternal("bluetooth", -1, "")
         }
 
         function togglePower() {
-            var willOpen = !powerPanel.opened
-            networkPanel.closePanel()
-            bluetoothPanel.closePanel()
-            clockPanel.closePanel()
-            brightnessPanel.closePanel()
-            audioPanel.closePanel()
-            mediaPanel.closePanel()
-            powerPanel.opened = willOpen
+            togglePanelInternal("power", -1, "")
         }
 
         function toggleClock() {
-            var willOpen = !clockPanel.opened
-            networkPanel.closePanel()
-            bluetoothPanel.closePanel()
-            powerPanel.closePanel()
-            brightnessPanel.closePanel()
-            audioPanel.closePanel()
-            mediaPanel.closePanel()
-            clockPanel.opened = willOpen
-            if (clockPanel.opened) clockPanel.refresh()
+            togglePanelInternal("clock", -1, "")
         }
 
         function toggleBrightness() {
-            var willOpen = !brightnessPanel.opened
-            networkPanel.closePanel()
-            bluetoothPanel.closePanel()
-            powerPanel.closePanel()
-            clockPanel.closePanel()
-            audioPanel.closePanel()
-            mediaPanel.closePanel()
-            brightnessPanel.opened = willOpen
-            if (brightnessPanel.opened) brightnessPanel.refresh()
+            togglePanelInternal("brightness", -1, "")
         }
 
         function toggleAudio() {
-            var willOpen = !audioPanel.opened
-            networkPanel.closePanel()
-            bluetoothPanel.closePanel()
-            powerPanel.closePanel()
-            clockPanel.closePanel()
-            brightnessPanel.closePanel()
-            mediaPanel.closePanel()
-            audioPanel.opened = willOpen
-            if (audioPanel.opened) audioPanel.refresh()
+            togglePanelInternal("audio", -1, "")
         }
 
         function toggleMedia() {
-            var willOpen = !mediaPanel.opened
-            networkPanel.closePanel()
-            bluetoothPanel.closePanel()
-            powerPanel.closePanel()
-            clockPanel.closePanel()
-            brightnessPanel.closePanel()
-            audioPanel.closePanel()
-            mediaPanel.opened = willOpen
-            if (mediaPanel.opened) mediaPanel.refresh()
+            togglePanelInternal("media", -1, "")
         }
     }
 }

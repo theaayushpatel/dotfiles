@@ -64,11 +64,21 @@ PanelWindow {
   WlrLayershell.layer: WlrLayer.Top
   WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand
 
-  // Placed directly below the pulseaudio modules on the right side of Waybar
+  property real targetCenterX: -1
+
   anchors.top: true
-  anchors.right: true
-  margins.top: 40
-  margins.right: 12
+  anchors.left: true
+  anchors.right: false
+  margins.top: 44
+  margins.left: {
+    var screenW = (root.screen ? root.screen.width : 1920)
+    var panelW = root.implicitWidth || 420
+    var cx = targetCenterX >= 0 ? targetCenterX : (screenW / 2)
+    var left = cx - (panelW / 2)
+    var minLeft = 12
+    var maxLeft = screenW - panelW - 12
+    return Math.round(Math.max(minLeft, Math.min(maxLeft, left)))
+  }
 
   HyprlandFocusGrab {
     windows: [ root ]

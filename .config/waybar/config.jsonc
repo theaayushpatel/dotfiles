@@ -143,7 +143,7 @@
     "format": "{}",
     "on-click": "zsh -lc 'ghostty -e nvtop'"
 },
- "backlight": {
+  "backlight": {
     "device": "amdgpu_bl1",
     "format": "{icon} {percent}%",
     "tooltip": true,
@@ -153,12 +153,12 @@
     "format-icons": ["󰃜", "󰃝", "󰃞", "󰃟", "󰃠"],
     "on-scroll-down": "brightnessctl s 5%-",
     "on-scroll-up": "brightnessctl s +5%",
-    "on-click": "quickshell ipc -p ~/.config/quickshell call shell toggleBrightness"
+    "on-click": "~/.config/quickshell/scripts/toggle.py brightness"
   },
    "clock": {
     "format": "<span color='#47c8ff'>{0:%H:%M}</span> <span size='small' color='#ffffff'><i>{0:%a, %b %d}</i></span>",
     "tooltip": false,
-    "on-click": "quickshell ipc -p ~/.config/quickshell call shell toggleClock"
+    "on-click": "~/.config/quickshell/scripts/toggle.py clock"
   },
   "network": {
     "format": "<span color='#47c8ff'>net</span> on",
@@ -170,7 +170,7 @@
     "tooltip-format-disconnected": "Disconnected",
     "interval": 3,
     "spacing": 1,
-    "on-click": "quickshell ipc -p ~/.config/quickshell call shell toggleNetwork"
+    "on-click": "~/.config/quickshell/scripts/toggle.py network"
   },
 "battery": {
     "format": "{icon} {capacity}%",
@@ -185,7 +185,7 @@
     "tooltip-format-discharging": "{power:>1.0f}W↓ {capacity}%",
     "tooltip-format-charging": "{power:>1.0f}W↑ {capacity}%",
     "interval": 5,
-    "on-click": "quickshell ipc -p ~/.config/quickshell call shell togglePower",
+    "on-click": "~/.config/quickshell/scripts/toggle.py power",
     // "on-click-right": "notify-send -u low \"$(omarchy-battery-status)\"",
     "states": {
       "warning": 20,
@@ -197,7 +197,7 @@
     "format-disabled": "󰂲 ",
     "format-connected": "󰂱 {num_connections}",
     "tooltip-format": "Devices connected: {num_connections}",
-    "on-click": "quickshell ipc -p ~/.config/quickshell call shell toggleBluetooth"
+    "on-click": "~/.config/quickshell/scripts/toggle.py bluetooth"
   },
 "pulseaudio#input": {
     "format": "{format_source}",
@@ -207,7 +207,7 @@
     "scroll-step": 1,
     "smooth-scrolling-threshold": 1,
     "max-volume": 100,
-    "on-click": "quickshell ipc -p ~/.config/quickshell call shell toggleAudio",
+    "on-click": "~/.config/quickshell/scripts/toggle.py audio pulseaudio#input",
     "on-click-right": "pactl set-source-mute @DEFAULT_SOURCE@ toggle",
     "on-scroll-up": "pactl set-source-volume @DEFAULT_SOURCE@ +1%",
     "on-scroll-down": "pactl set-source-volume @DEFAULT_SOURCE@ -1%"
@@ -219,7 +219,7 @@
     "max-volume": 100,
     "scroll-step": 2,
     "smooth-scrolling-threshold": 1,
-    "on-click": "quickshell ipc -p ~/.config/quickshell call shell toggleAudio",
+    "on-click": "~/.config/quickshell/scripts/toggle.py audio pulseaudio#output",
     "on-click-right": "pactl set-sink-mute @DEFAULT_SINK@ toggle"
 },
   "mpris": {
@@ -230,7 +230,7 @@
     "dynamic-importance-order": ["position", "length", "title"],
     "tooltip-format": "{player} ({status}):\n{artist} - {title}",  
     "ignored-players": ["firefox", "brave"],
-    "on-click": "quickshell ipc -p ~/.config/quickshell call shell toggleMedia",
+    "on-click": "~/.config/quickshell/scripts/toggle.py media",
     "on-click-right": "playerctl play-pause"
 
   },

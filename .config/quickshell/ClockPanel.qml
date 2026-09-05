@@ -54,11 +54,21 @@ PanelWindow {
   WlrLayershell.layer: WlrLayer.Top
   WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand
 
-  // Placed directly below the left-side Waybar clock module
+  property real targetCenterX: -1
+
   anchors.top: true
   anchors.left: true
-  margins.top: 40
-  margins.left: 12
+  anchors.right: false
+  margins.top: 44
+  margins.left: {
+    var screenW = (root.screen ? root.screen.width : 1920)
+    var panelW = root.implicitWidth || 440
+    var cx = targetCenterX >= 0 ? targetCenterX : (screenW / 2)
+    var left = cx - (panelW / 2)
+    var minLeft = 12
+    var maxLeft = screenW - panelW - 12
+    return Math.round(Math.max(minLeft, Math.min(maxLeft, left)))
+  }
 
   HyprlandFocusGrab {
     windows: [ root ]

@@ -10,7 +10,7 @@ local mainMod = "SUPER" -- Sets "Windows" key as main modifier
 
 -- Example binds, see https://wiki.hypr.land/Configuring/Basics/Binds/ for more
 hl.bind(mainMod .. " + RETURN", hl.dsp.exec_cmd(p.terminal))
-
+hl.bind(mainMod .. " + SHIFT + RETURN", hl.dsp.exec_cmd(p.browser))
 local closeWindowBind = hl.bind(mainMod .. " + Q", hl.dsp.window.close())
 
 -- closeWindowBind:set_enabled(false)
@@ -47,6 +47,11 @@ hl.bind(mainMod .. "+ SHIFT + A", hl.dsp.exec_cmd("swaync-client -t"))
 hl.bind(mainMod .. " + O", hl.dsp.exec_cmd("zsh -lc '~/.config/hypr/scripts/finder.sh'"))
 hl.bind(mainMod .. " + SHIFT + W", hl.dsp.exec_cmd("zsh -lc '~/.config/hypr/scripts/wallpaper.sh'"))
 hl.bind(mainMod .. " + CTRL + SHIFT + W", hl.dsp.exec_cmd("zsh -lc '~/.config/hypr/scripts/wallpaper.sh --random all'"))
+
+-- Monitor / Display Settings Panel
+hl.bind("XF86Display", hl.dsp.exec_cmd("bash -lc '~/.config/quickshell/scripts/toggle_monitor.sh'"), { locked = true })
+hl.bind(mainMod .. " + SHIFT + P", hl.dsp.exec_cmd("bash -lc '~/.config/quickshell/scripts/toggle_monitor.sh'"))
+
 -- Move focus with mainMod + arrow keys
 hl.bind(mainMod .. " + left",  hl.dsp.focus({ direction = "left" }))
 hl.bind(mainMod .. " + right", hl.dsp.focus({ direction = "right" }))

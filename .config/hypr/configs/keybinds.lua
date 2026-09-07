@@ -48,10 +48,6 @@ hl.bind(mainMod .. " + O", hl.dsp.exec_cmd("zsh -lc '~/.config/hypr/scripts/find
 hl.bind(mainMod .. " + SHIFT + W", hl.dsp.exec_cmd("zsh -lc '~/.config/hypr/scripts/wallpaper.sh'"))
 hl.bind(mainMod .. " + CTRL + SHIFT + W", hl.dsp.exec_cmd("zsh -lc '~/.config/hypr/scripts/wallpaper.sh --random all'"))
 
--- Monitor / Display Settings Panel
-hl.bind("XF86Display", hl.dsp.exec_cmd("bash -lc '~/.config/quickshell/scripts/toggle_monitor.sh'"), { locked = true })
-hl.bind(mainMod .. " + SHIFT + P", hl.dsp.exec_cmd("bash -lc '~/.config/quickshell/scripts/toggle_monitor.sh'"))
-
 -- Move focus with mainMod + arrow keys
 hl.bind(mainMod .. " + left",  hl.dsp.focus({ direction = "left" }))
 hl.bind(mainMod .. " + right", hl.dsp.focus({ direction = "right" }))

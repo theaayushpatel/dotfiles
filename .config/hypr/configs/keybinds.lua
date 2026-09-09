@@ -40,7 +40,8 @@ hl.bind(mainMod .. " + P", hl.dsp.window.pseudo())
 hl.bind(mainMod .. " + J", hl.dsp.layout("togglesplit"))    -- dwindle only
 hl.bind("Print", hl.dsp.exec_cmd("flameshot gui"))
 hl.bind(mainMod .. " + CTRL + T", hl.dsp.exec_cmd("rune-desktop"))
-hl.bind(mainMod .. " + V", hl.dsp.exec_cmd("cliphist list | rofi -dmenu | cliphist decode | wl-copy"))
+hl.bind(mainMod .. " + CTRL + V", hl.dsp.exec_cmd("cliphist list | rofi -dmenu -p 'Delete Clip:' | cliphist delete"))
+hl.bind(mainMod .. " + V", hl.dsp.exec_cmd("cliphist list | rofi -dmenu -p 'Select Clip:' | cliphist decode | wl-copy"))
 
 -- hl.bind(mainMod .. " + F4", hl.dsp.exec_cmd("zsh -lc '~/.config/hypr/scripts/power.sh'"))
 hl.bind(mainMod .. "+ SHIFT + A", hl.dsp.exec_cmd("swaync-client -t"))

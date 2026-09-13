@@ -159,3 +159,7 @@ rm -f ~/.zcompdump; compinit # avalanche completion
 
 # opencode
 export PATH=/home/aayush/.opencode/bin:$PATH
+# Added by LM Studio CLI (lms)
+export PATH="$PATH:/home/aayush/.lmstudio/bin"
+# End of LM Studio CLI section
+

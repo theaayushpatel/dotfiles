@@ -229,7 +229,7 @@
     "dynamic-order": ["title", "position", "length"], 
     "dynamic-importance-order": ["position", "length", "title"],
     "tooltip-format": "{player} ({status}):\n{artist} - {title}",  
-    "ignored-players": ["firefox", "brave"],
+    "ignored-players": ["firefox", "brave", "vlc"],
     "on-click": "~/.config/quickshell/scripts/toggle.py media",
     "on-click-right": "playerctl play-pause"
 
